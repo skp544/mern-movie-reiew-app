@@ -5,6 +5,7 @@ import FormInput from "./Form/FormInput";
 import Submit from "./Form/Submit";
 import CustomLink from "./CustomLink";
 import FormContainer from "./Form/FormContainer";
+import NotVerified from "./User/NotVerified";
 
 export {
   Navbar,
@@ -14,4 +15,5 @@ export {
   Submit,
   CustomLink,
   FormContainer,
+  NotVerified,
 };

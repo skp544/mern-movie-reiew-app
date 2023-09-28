@@ -1,5 +1,7 @@
 const express = require("express");
 
+require("dotenv").config();
+
 // controllers
 const {
   create,
@@ -19,6 +21,7 @@ const {
   signInValidator,
 } = require("../middlewares/validator");
 const { isValidPassResetToken } = require("../middlewares/userMiddleware");
+const { isAuth } = require("../middlewares/auth");
 
 const router = express.Router();
 
@@ -40,5 +43,19 @@ router.post(
   resetPassword
 );
 router.post("/sign-in", signInValidator, validate, signIn);
+router.get("/is-auth", isAuth, (req, res) => {
+  const { user } = req;
+
+  return res.status(201).json({
+    success: true,
+    message: "User Found",
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      isVerified: user.isVerified,
+    },
+  });
+});
 
 module.exports = router;

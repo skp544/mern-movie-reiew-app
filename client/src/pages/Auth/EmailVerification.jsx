@@ -1,15 +1,43 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
 import { Container, FormContainer, Submit, Title } from "../../components";
 import { commonModalClasses } from "../../utils/theme";
+import { resendEmailVerificationToken, verifyUserEmail } from "../../api/auth";
+import toast from "react-hot-toast";
+import { useAuth } from "../../hooks";
 
 const OTP_LENGTH = 6;
 let currentOTPIndex;
+
+const isValidElementOTP = (otp) => {
+  let valid = false;
+
+  for (let val of otp) {
+    valid = !isNaN(parseInt(val));
+
+    if (!valid) {
+      break;
+    }
+  }
+
+  return valid;
+};
 
 const EmailVerification = () => {
   const [otp, setOtp] = useState(new Array(OTP_LENGTH).fill(""));
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
 
+  const { isAuth, authInfo } = useAuth();
+  const { isLoggedIn, profile } = authInfo;
+  const isVerified = profile?.isVerified;
+
+  const navigate = useNavigate();
+
   const inputRef = useRef();
+
+  const { state } = useLocation();
+  const user = state.user;
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -29,7 +57,7 @@ const EmailVerification = () => {
 
   const handleOtpChange = (e) => {
     const value = e.target.value;
-    // console.log(value);
+
     const newOtp = [...otp];
     newOtp[currentOTPIndex] = value.substring(value.length - 1, value.length);
 
@@ -48,11 +76,56 @@ const EmailVerification = () => {
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!isValidElementOTP(otp)) {
+      return toast.error("Invalid OTP");
+    }
+
+    const {
+      success,
+      message,
+      user: userResponse,
+    } = await verifyUserEmail({
+      OTP: otp.join(""),
+      userId: user.id,
+    });
+
+    if (!success) {
+      return toast.error(message);
+    }
+
+    toast.success(message);
+
+    localStorage.setItem("auth-token", userResponse.token);
+    isAuth();
+  };
+
+  const handleOTPResend = async () => {
+    const { success, message } = await resendEmailVerificationToken(user.id);
+
+    if (!success) {
+      return toast.error(message);
+    }
+
+    toast.success(message);
+  };
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/not-found");
+    }
+    if (isLoggedIn && isVerified) {
+      navigate("/");
+    }
+  }, [user, isLoggedIn, isVerified]);
+
   return (
     <FormContainer>
       <Container>
         <form
-          action=""
+          onSubmit={handleSubmit}
           className={`${commonModalClasses} py-8 space-y-7 text-center w-max `}
         >
           <div className="flex flex-col gap-2">
@@ -80,7 +153,16 @@ const EmailVerification = () => {
             })}
           </div>
 
-          <Submit value={"Send Link"} />
+          <div className="">
+            <Submit value={"Verify Account"} />
+            <button
+              type="button"
+              onClick={handleOTPResend}
+              className=" dark:text-white text-blue-500 hover:underline mt-4"
+            >
+              I don&apos;t have OTP
+            </button>
+          </div>
         </form>
       </Container>
     </FormContainer>

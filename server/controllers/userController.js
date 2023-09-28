@@ -34,7 +34,7 @@ exports.create = async (req, res) => {
     if (existingUser) {
       return res.status(401).json({
         success: false,
-        message: "User already exist",
+        message: "Email already in use",
       });
     }
 
@@ -68,9 +68,11 @@ exports.create = async (req, res) => {
     // sending response
     return res.status(201).json({
       success: true,
-      message:
-        "Please verify your email. OTP has been sent to your email account!",
-      newUser,
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+      },
     });
   } catch (error) {
     console.log("Error in create user");
@@ -152,11 +154,19 @@ exports.verifyEmail = async (req, res) => {
         <p>Thanks for choosing us </p>
       `,
     });
+
+    const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
     // returning response
     return res.status(200).json({
       success: true,
       message: "Email is verified",
-      user,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        token: jwtToken,
+        isVerified: user.isVerified,
+      },
     });
   } catch (error) {
     console.log("Error in verifyEmail controller");
@@ -228,7 +238,7 @@ exports.resendEmailVerificationToken = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Another OTP sent",
+      message: "Another OTP sent to your email",
     });
   } catch (error) {
     console.log("Error in resend Email Verification Token controller");
@@ -284,7 +294,7 @@ exports.forgotPassword = async (req, res) => {
 
     await newPasswordResetToken.save();
 
-    const resetPasswordUrl = `http://localhost:5173/reset-password?token=${token}&id=${user._id}`;
+    const resetPasswordUrl = `http://localhost:5173/auth/reset-password?token=${token}&id=${user._id}`;
 
     // send to user
     let transport = generateMailTransporter();
@@ -414,12 +424,14 @@ exports.signIn = async (req, res) => {
       });
     }
 
+    const { _id, name, isVerified } = user;
+
     const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
 
     return res.status(200).json({
       success: true,
-      user,
-      token: jwtToken,
+      message: "User Logged In",
+      user: { id: _id, name, email, token: jwtToken, isVerified },
     });
   } catch (error) {
     console.log("Error in signIn controller");

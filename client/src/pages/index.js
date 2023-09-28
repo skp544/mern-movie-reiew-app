@@ -4,6 +4,7 @@ import SignUp from "./Auth/SignUp";
 import EmailVerification from "./Auth/EmailVerification";
 import ForgetPassword from "./Auth/ForgetPassword";
 import ConfirmPassword from "./Auth/ConfirmPassword";
+import NotFound from "./NotFound";
 
 export {
   Home,
@@ -12,4 +13,5 @@ export {
   EmailVerification,
   ForgetPassword,
   ConfirmPassword,
+  NotFound,
 };

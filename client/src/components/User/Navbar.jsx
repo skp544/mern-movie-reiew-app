@@ -1,10 +1,16 @@
 import { BsFillSunFill } from "react-icons/bs";
 import Container from "../Container";
-import { Link } from "react-router-dom";
-import { useTheme } from "../../hooks";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth, useTheme } from "../../hooks";
 
 const Navbar = () => {
   const { toggleTheme } = useTheme();
+  const { authInfo, handleLogout } = useAuth();
+
+  const { isLoggedIn, profile } = authInfo;
+  const name = profile?.name?.split(" ")[0];
+
+  const navigate = useNavigate();
 
   return (
     <div className=" bg-secondary shadow-sm s shadow-gray-500">
@@ -29,15 +35,44 @@ const Navbar = () => {
                 placeholder="Search..."
               />
             </li>
-            <li className=" font-semibold text-xl">
-              <Link
-                to={"/auth/sign-in"}
-                className={
-                  "text-white hover:text-dark-subtle transition-all duration-200"
-                }
-              >
-                Login
-              </Link>
+            <li className=" font-semibold text-xl flex gap-5 items-center">
+              {isLoggedIn ? (
+                <>
+                  <p className={"text-white  transition-all duration-200 "}>
+                    {name}
+                  </p>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      navigate("/auth/sign-in");
+                    }}
+                    className={
+                      "text-white hover:text-dark-subtle transition-all duration-200 cursor-pointer"
+                    }
+                  >
+                    Log out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to={"/auth/sign-in"}
+                    className={
+                      "text-white hover:text-dark-subtle transition-all duration-200"
+                    }
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to={"/auth/sign-up"}
+                    className={
+                      "text-white hover:text-dark-subtle transition-all duration-200"
+                    }
+                  >
+                    Sign up
+                  </Link>
+                </>
+              )}
             </li>
           </ul>
         </div>
