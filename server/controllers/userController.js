@@ -20,14 +20,6 @@ exports.create = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // checking values
-    if (!name || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Fill all the fields",
-      });
-    }
-
     // checking existing user
     const existingUser = await User.findOne({ email });
 
@@ -424,14 +416,14 @@ exports.signIn = async (req, res) => {
       });
     }
 
-    const { _id, name, isVerified } = user;
+    const { _id, name, isVerified, role } = user;
 
     const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
 
     return res.status(200).json({
       success: true,
       message: "User Logged In",
-      user: { id: _id, name, email, token: jwtToken, isVerified },
+      user: { id: _id, name, email, token: jwtToken, isVerified, role },
     });
   } catch (error) {
     console.log("Error in signIn controller");

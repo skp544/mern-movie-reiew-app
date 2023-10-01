@@ -40,11 +40,8 @@ exports.validate = (req, res, next) => {
   next();
 };
 
-// var transport = nodemailer.createTransport({
-//     host: "sandbox.smtp.mailtrap.io",
-//     port: 2525,
-//     auth: {
-//       user: "e0e6766fed9f1c",
-//       pass: "6629806f3ead70"
-//     }
-//   });
+exports.actorInfoValidator = [
+  check("name").trim().not().isEmpty().withMessage("Name is Missing"),
+  check("about").trim().not().isEmpty().withMessage("About is required field"),
+  check("gender").trim().not().isEmpty().withMessage("Gender is requird field"),
+];

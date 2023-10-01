@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+const cloudinary = require("cloudinary").v2;
 
 //rnadom byte function
 exports.generateRandomByte = () => {
@@ -17,4 +18,27 @@ exports.handleNotFound = (req, res) => {
     success: false,
     message: "Not Found",
   });
+};
+
+exports.uploadActor = async (file) => {
+  const res = await cloudinary.uploader.upload(file.path, {
+    folder: process.env.CLOUD_FOLDER_NAME,
+    gravity: "face",
+    height: 500,
+    width: 500,
+    crop: "thumb",
+  });
+  return res;
+};
+
+exports.formatActor = (actor) => {
+  const { name, gender, about, _id, avatar } = actor;
+
+  return {
+    id: _id,
+    name,
+    about,
+    gender,
+    avatar: avatar?.url,
+  };
 };
