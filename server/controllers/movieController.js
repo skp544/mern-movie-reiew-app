@@ -148,6 +148,7 @@ exports.updateWithoutPoster = async (req, res) => {
   try {
     const { movieId } = req.params;
 
+    // checking movie id is valid or not
     if (!isValidObjectId(movieId)) {
       return res.status(401).json({
         success: false,
@@ -157,6 +158,7 @@ exports.updateWithoutPoster = async (req, res) => {
 
     const movie = await Movie.findById(movieId);
 
+    // checking if movie is present or not
     if (!movie) {
       return res.status(404).json({
         success: false,
@@ -190,6 +192,7 @@ exports.updateWithoutPoster = async (req, res) => {
     movie.trailer = trailer;
     movie.language = language;
 
+    // adding director if present
     if (director) {
       if (!isValidObjectId(director)) {
         return res.status(401).json({
@@ -201,6 +204,7 @@ exports.updateWithoutPoster = async (req, res) => {
       movie.director = director;
     }
 
+    // adding writer if present
     if (writers) {
       for (let writerId of writers) {
         if (!isValidObjectId(writerId)) {
@@ -213,6 +217,7 @@ exports.updateWithoutPoster = async (req, res) => {
       movie.writers = writers;
     }
 
+    // saving movie
     await movie.save();
 
     return res.status(201).json({
@@ -234,6 +239,7 @@ exports.updateWithPoster = async (req, res) => {
   try {
     const { movieId } = req.params;
 
+    //checking movie id is valid or not
     if (!isValidObjectId(movieId)) {
       return res.status(401).json({
         success: false,
@@ -241,6 +247,7 @@ exports.updateWithPoster = async (req, res) => {
       });
     }
 
+    // checking if poster file is present or not
     if (!req.file) {
       return res.status(401).json({
         success: false,
@@ -250,6 +257,7 @@ exports.updateWithPoster = async (req, res) => {
 
     const movie = await Movie.findById(movieId);
 
+    // checking if movie is present or not
     if (!movie) {
       return res.status(404).json({
         success: false,
@@ -283,6 +291,7 @@ exports.updateWithPoster = async (req, res) => {
     movie.trailer = trailer;
     movie.language = language;
 
+    // saving director if present
     if (director) {
       if (!isValidObjectId(director)) {
         return res.status(401).json({
@@ -294,6 +303,7 @@ exports.updateWithPoster = async (req, res) => {
       movie.director = director;
     }
 
+    // saving writer if present
     if (writers) {
       for (let writerId of writers) {
         if (!isValidObjectId(writerId)) {
@@ -320,6 +330,7 @@ exports.updateWithPoster = async (req, res) => {
       }
     }
 
+    // adding new poster
     const {
       secure_url: url,
       public_id,
@@ -345,6 +356,7 @@ exports.updateWithPoster = async (req, res) => {
     // adding posterObj
     movie.poster = posterObj;
 
+    // saving poster
     await movie.save();
 
     return res.status(201).json({
@@ -366,6 +378,7 @@ exports.removeMovie = async (req, res) => {
   try {
     const { movieId } = req.params;
 
+    // checking id is valid or not
     if (!isValidObjectId(movieId)) {
       return res.status(401).json({
         success: false,
@@ -375,6 +388,7 @@ exports.removeMovie = async (req, res) => {
 
     const movie = await Movie.findById(movieId);
 
+    // checking if movie is present or not
     if (!movie) {
       return res.status(404).json({
         success: false,
@@ -383,9 +397,6 @@ exports.removeMovie = async (req, res) => {
     }
 
     // check if there is poster or not
-
-    // if yes we need to delete
-
     const posterId = movie.poster?.public_id;
 
     if (posterId) {
@@ -399,6 +410,7 @@ exports.removeMovie = async (req, res) => {
       }
     }
 
+    // checking if trailer is present or not
     const trailerId = movie.trailer?.public_id;
 
     if (!trailerId) {
@@ -419,6 +431,7 @@ exports.removeMovie = async (req, res) => {
       });
     }
 
+    // deleting movie
     await Movie.findByIdAndDelete(movieId);
 
     return res.status(201).json({
