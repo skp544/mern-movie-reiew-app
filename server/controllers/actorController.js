@@ -11,8 +11,10 @@ exports.createActor = async (req, res) => {
     const { name, about, gender } = req.body;
     const { file } = req;
 
+    // creating actor
     const newActor = new Actor({ name, about, gender });
 
+    // uploading image
     if (file) {
       const uploadRes = await uploadActor(file);
 
@@ -21,6 +23,7 @@ exports.createActor = async (req, res) => {
       newActor.avatar = { url: secure_url, public_id };
     }
 
+    // saving actor
     await newActor.save();
 
     return res.status(201).json({
@@ -45,6 +48,7 @@ exports.updateActor = async (req, res) => {
     const { file } = req;
     const { actorId } = req.params;
 
+    // checking id is valid or not
     if (!isValidObjectId(actorId)) {
       return res.status(401).json({
         success: false,
@@ -52,6 +56,7 @@ exports.updateActor = async (req, res) => {
       });
     }
 
+    // finding actor
     const actor = await Actor.findById(actorId);
 
     if (!actor) {
@@ -63,9 +68,9 @@ exports.updateActor = async (req, res) => {
 
     const public_id = actor.avatar.public_id;
 
+    // removing image
     if (public_id && file) {
       const { result } = await cloudinary.uploader.destroy(public_id);
-      console.log(result);
 
       if (result !== "ok") {
         return res.status(401).json({
@@ -75,6 +80,7 @@ exports.updateActor = async (req, res) => {
       }
     }
 
+    // uploading new image
     if (file) {
       const uploadRes = await uploadActor(file);
 
@@ -83,6 +89,7 @@ exports.updateActor = async (req, res) => {
       actor.avatar = { url: secure_url, public_id };
     }
 
+    // updating and saving
     actor.name = name;
     actor.about = about;
     actor.gender = gender;
@@ -109,6 +116,7 @@ exports.removeActor = async (req, res) => {
   try {
     const { actorId } = req.params;
 
+    // checking id valid or not
     if (!isValidObjectId(actorId)) {
       return res.status(401).json({
         success: false,
@@ -116,6 +124,7 @@ exports.removeActor = async (req, res) => {
       });
     }
 
+    // finding actor
     const actor = await Actor.findById(actorId);
 
     if (!actor) {
@@ -127,6 +136,7 @@ exports.removeActor = async (req, res) => {
 
     const public_id = actor.avatar.public_id;
 
+    // removing image
     if (public_id) {
       const { result } = await cloudinary.uploader.destroy(public_id);
 
@@ -138,6 +148,7 @@ exports.removeActor = async (req, res) => {
       }
     }
 
+    // deleting actor
     await Actor.findByIdAndDelete(actorId);
 
     return res.status(201).json({
@@ -158,9 +169,11 @@ exports.removeActor = async (req, res) => {
 exports.searchActor = async (req, res) => {
   try {
     const { query } = req;
-    // query.name;
+
+    // searching actor using query
     const result = await Actor.find({ $text: { $search: `"${query.name}"` } });
 
+    // formating result
     const actors = result.map((actor) => formatActor(actor));
 
     return res.status(201).json({
@@ -182,8 +195,10 @@ exports.searchActor = async (req, res) => {
 // lastest actor controller
 exports.getLatestActor = async (req, res) => {
   try {
+    // finding actor in descending order
     const result = await Actor.find().sort({ createdAt: "-1" }).limit(12);
 
+    // formating actor
     const actors = result.map((actor) => formatActor(actor));
 
     return res.status(201).json({
@@ -206,6 +221,7 @@ exports.getSingleActor = async (req, res) => {
   try {
     const { id } = req.params;
 
+    // checking id is valid or not
     if (!isValidObjectId(id)) {
       return res.status(401).json({
         success: false,
@@ -213,6 +229,7 @@ exports.getSingleActor = async (req, res) => {
       });
     }
 
+    // finding actor
     const actor = await Actor.findById(id);
 
     if (!actor) {

@@ -31,6 +31,30 @@ exports.uploadActor = async (file) => {
   return res;
 };
 
+exports.uploadTrailerCloud = async (file) => {
+  const res = await cloudinary.uploader.upload(file.path, {
+    folder: process.env.CLOUD_FOLDER_NAME,
+    resource_type: "video",
+  });
+  return res;
+};
+
+exports.uploadPosterCloud = async (file) => {
+  const res = await cloudinary.uploader.upload(file.path, {
+    folder: process.env.CLOUD_FOLDER_NAME,
+    transformation: {
+      width: 1280,
+      height: 720,
+    },
+    responsive_breakpoints: {
+      create_derived: true,
+      max_width: 640,
+      max_images: 3,
+    },
+  });
+  return res;
+};
+
 exports.formatActor = (actor) => {
   const { name, gender, about, _id, avatar } = actor;
 
@@ -41,4 +65,27 @@ exports.formatActor = (actor) => {
     gender,
     avatar: avatar?.url,
   };
+};
+
+exports.parseData = (req, res, next) => {
+  const { trailer, genres, cast, tags, writers } = req.body;
+
+  console.log(req.body);
+
+  if (trailer) {
+    req.body.trailer = JSON.parse(trailer);
+  }
+  if (cast) {
+    req.body.cast = JSON.parse(cast);
+  }
+  if (genres) {
+    req.body.genres = JSON.parse(genres);
+  }
+  if (tags) {
+    req.body.tags = JSON.parse(tags);
+  }
+  if (writers) {
+    req.body.writers = JSON.parse(writers);
+  }
+  next();
 };
