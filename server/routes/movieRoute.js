@@ -43,7 +43,6 @@ router.patch(
   "/update-movie-without-poster/:movieId",
   isAuth,
   isAdmin,
-  // parseData,
   validateMovie,
   validate,
   updateWithoutPoster
@@ -60,14 +59,5 @@ router.patch(
   updateWithPoster
 );
 
-router.delete(
-  "/:movieId",
-  isAuth,
-  isAdmin,
-  // uploadImage.single("poster"),
-  // parseData,
-  // validateMovie,
-  // validate,
-  removeMovie
-);
+router.delete("/:movieId", isAuth, isAdmin, removeMovie);
 module.exports = router;

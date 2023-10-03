@@ -6,6 +6,10 @@ import Submit from "./Form/Submit";
 import CustomLink from "./CustomLink";
 import FormContainer from "./Form/FormContainer";
 import NotVerified from "./User/NotVerified";
+import AdminNavbar from "./Admin/AdminNavbar";
+import Header from "./Admin/Header";
+import MovieUpload from "./Admin/MovieUpload";
+import MovieForm from "./Admin/MovieForm";
 
 export {
   Navbar,
@@ -16,4 +20,8 @@ export {
   CustomLink,
   FormContainer,
   NotVerified,
+  AdminNavbar,
+  Header,
+  MovieUpload,
+  MovieForm,
 };

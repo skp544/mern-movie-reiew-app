@@ -9,8 +9,16 @@ import {
   SignIn,
   SignUp,
 } from "./pages";
+import { useAuth } from "./hooks";
+import AdminNavigator from "./navigator/AdminNavigator";
 
 const App = () => {
+  const { authInfo } = useAuth();
+
+  const isAdmin = authInfo?.profile?.role === "admin";
+
+  if (isAdmin) return <AdminNavigator />;
+
   return (
     <>
       <Navbar />

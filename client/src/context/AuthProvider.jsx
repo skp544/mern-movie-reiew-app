@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { getIsAuth, signInUser } from "../api/auth";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
@@ -13,6 +14,7 @@ const defaultAuthInfo = {
 
 const AuthProvider = ({ children }) => {
   const [authInfo, setAuthInfo] = useState({ ...defaultAuthInfo });
+  const navigate = useNavigate();
 
   const handleLogin = async (email, password) => {
     setAuthInfo({ ...authInfo, isPending: true });
@@ -23,6 +25,8 @@ const AuthProvider = ({ children }) => {
       toast.error(message);
       return setAuthInfo({ ...authInfo, isPending: false, error: message });
     }
+
+    navigate("/", { replace: true });
 
     setAuthInfo({
       profile: { ...user },
@@ -59,6 +63,7 @@ const AuthProvider = ({ children }) => {
   const handleLogout = () => {
     localStorage.removeItem("auth-token");
     setAuthInfo({ ...defaultAuthInfo });
+    navigate("/auth/sign-in");
     toast.success("Logged Out");
   };
 

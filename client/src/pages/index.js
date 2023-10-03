@@ -5,6 +5,9 @@ import EmailVerification from "./Auth/EmailVerification";
 import ForgetPassword from "./Auth/ForgetPassword";
 import ConfirmPassword from "./Auth/ConfirmPassword";
 import NotFound from "./NotFound";
+import Actors from "./Admin/Actors";
+import Dashboard from "./Admin/Dashboard";
+import Movies from "./Admin/Movies";
 
 export {
   Home,
@@ -14,4 +17,7 @@ export {
   ForgetPassword,
   ConfirmPassword,
   NotFound,
+  Actors,
+  Dashboard,
+  Movies,
 };

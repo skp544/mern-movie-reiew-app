@@ -4,7 +4,7 @@ import ThemeProvider from "./ThemeProvider";
 const ContextProviders = ({ children }) => {
   return (
     <AuthProvider>
-      <ThemeProvider>{children}</ThemeProvider>;
+      <ThemeProvider>{children}</ThemeProvider>
     </AuthProvider>
   );
 };
