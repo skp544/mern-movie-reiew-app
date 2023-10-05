@@ -16,6 +16,10 @@ import ModalContainer from "./Modals/ModalContainer";
 import WritersModal from "./Modals/WritersModal";
 import CastForm from "./Form/CastForm";
 import CastModal from "./Modals/CastModal";
+import PosterSelector from "./Form/PosterSelector";
+import GenresSelector from "./GenresSelector";
+import GenresModal from "./Modals/GenresModal";
+import Selector from "./Form/Selector";
 
 export {
   Navbar,
@@ -36,4 +40,8 @@ export {
   WritersModal,
   CastForm,
   CastModal,
+  PosterSelector,
+  GenresSelector,
+  GenresModal,
+  Selector,
 };

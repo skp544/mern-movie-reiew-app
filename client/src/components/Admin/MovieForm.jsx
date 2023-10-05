@@ -1,16 +1,26 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
+
 import {
   CastForm,
   CastModal,
+  GenresModal,
+  GenresSelector,
   LiveSearch,
-  ModalContainer,
+  PosterSelector,
+  Selector,
   Submit,
   TagsInput,
   WritersModal,
 } from "../";
+
 import { results } from "../../utils/fakeData";
 import { commonInputClasses } from "../../utils/theme";
-import toast from "react-hot-toast";
+import {
+  languageOptions,
+  statusOptions,
+  typeOptions,
+} from "../../utils/options";
 
 const defaultMovieInfo = {
   title: "",
@@ -19,7 +29,7 @@ const defaultMovieInfo = {
   cast: [],
   director: {},
   writers: [],
-  releaseData: "",
+  releaseDate: "",
   poster: null,
   genres: [],
   type: "",
@@ -44,16 +54,40 @@ const MovieForm = () => {
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
   const [showWritersModal, setShowWritersModal] = useState(false);
   const [showCastModal, setShowCastModal] = useState(false);
+  const [showGenresModal, setShowGenresModal] = useState(false);
+  const [selectedPosterForUI, setSelectedPosterForUI] = useState("");
 
-  const { title, storyline, director, writers, cast, tags } = movieInfo;
+  const {
+    title,
+    storyline,
+    director,
+    writers,
+    cast,
+    tags,
+    genres,
+    type,
+    language,
+    status,
+  } = movieInfo;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(movieInfo);
   };
 
+  const updatePosterForUI = (file) => {
+    const url = URL.createObjectURL(file);
+    setSelectedPosterForUI(url);
+  };
+
   const handleChange = ({ target }) => {
-    const { value, name } = target;
+    const { value, name, files } = target;
+
+    if (name === "poster") {
+      const poster = files[0];
+      updatePosterForUI(poster);
+      return setMovieInfo({ ...movieInfo, poster });
+    }
 
     setMovieInfo({ ...movieInfo, [name]: value });
   };
@@ -116,17 +150,33 @@ const MovieForm = () => {
     setShowCastModal(true);
   };
 
+  const hideGenresModal = () => {
+    setShowGenresModal(false);
+  };
+
+  const displayGenresModal = () => {
+    setShowGenresModal(true);
+  };
+
   const updateCast = (castInfo) => {
     const { cast } = movieInfo;
     setMovieInfo({ ...movieInfo, cast: [...cast, castInfo] });
   };
 
+  const updateGenres = (genres) => {
+    setMovieInfo({ ...movieInfo, genres });
+  };
+
   return (
     <>
+      <h1 className="text-center text-2xl mt-2 mb-4 dark:text-white text-primary font-semibold">
+        Movie Form
+      </h1>
       <div className=" flex space-x-3">
+        {/* right  */}
         <div className="w-[70%] space-y-5 ">
           {/* title */}
-          <div>
+          <div className=" flex-col-1">
             <Label htmlFor={"title"}>Title</Label>
             <input
               id="title"
@@ -140,7 +190,7 @@ const MovieForm = () => {
           </div>
 
           {/* storyline */}
-          <div>
+          <div className=" flex-col-1">
             <Label htmlFor={"Storyline"}>Storyline</Label>
             <textarea
               name="storyline"
@@ -153,13 +203,13 @@ const MovieForm = () => {
           </div>
 
           {/* tags */}
-          <div>
+          <div className=" flex-col-1">
             <Label htmlFor={"tags"}>Tags</Label>
             <TagsInput value={tags} name="tags" onChange={updateTags} />
           </div>
 
           {/* director */}
-          <div>
+          <div className=" flex-col-1">
             <Label htmlFor={"director"}>Director</Label>
             <LiveSearch
               name={"director"}
@@ -172,7 +222,7 @@ const MovieForm = () => {
           </div>
 
           {/* writers */}
-          <div>
+          <div className=" flex-col-1">
             <div className=" flex justify-between">
               <LabelWithBadge badge={writers.length} htmlFor={"writers"}>
                 Writers
@@ -194,7 +244,7 @@ const MovieForm = () => {
           </div>
 
           {/* cast */}
-          <div className="relative">
+          <div className=" flex-col-1">
             <div className=" flex justify-between">
               <LabelWithBadge badge={cast.length}>
                 Add Cast & Crew
@@ -205,11 +255,65 @@ const MovieForm = () => {
             </div>
             <CastForm onSubmit={updateCast} />
           </div>
+
+          {/* date */}
+
+          <div className="flex flex-col gap-1">
+            <Label htmlFor={"releaseDate"}>Release Date</Label>
+            <input
+              type="date"
+              id="releaseDate"
+              className={`${commonInputClasses} border-2 rounded p-1 w-max`}
+              onChange={handleChange}
+              name="releaseDate"
+            />
+          </div>
           <Submit value={"Upload"} onClick={handleSubmit} type={"button"} />
         </div>
 
-        <div className="w-[30%] "></div>
+        {/* left */}
+        <div className="w-[30%]  space-y-5 ">
+          {/* poster */}
+          <PosterSelector
+            name={"poster"}
+            selectedPoster={selectedPosterForUI}
+            onChange={handleChange}
+            accept="image/*"
+          />
+
+          {/* genres */}
+          <GenresSelector onClick={displayGenresModal} badge={genres.length} />
+
+          {/* movie type */}
+          <Selector
+            onChange={handleChange}
+            options={typeOptions}
+            label={"Type"}
+            name={"type"}
+            value={type}
+          />
+
+          {/* movie language */}
+          <Selector
+            onChange={handleChange}
+            name={"language"}
+            options={languageOptions}
+            label={"Language"}
+            value={language}
+          />
+
+          {/* movie status */}
+          <Selector
+            onChange={handleChange}
+            options={statusOptions}
+            label={"Status"}
+            name={"status"}
+            value={status}
+          />
+        </div>
       </div>
+
+      {/* Modals */}
       <WritersModal
         profiles={writers}
         visible={showWritersModal}
@@ -221,6 +325,13 @@ const MovieForm = () => {
         visible={showCastModal}
         onClose={hideCastModal}
         onRemoveClick={handleCastRemove}
+      />
+
+      <GenresModal
+        onSubmit={updateGenres}
+        visible={showGenresModal}
+        onClose={hideGenresModal}
+        previousSelection={genres}
       />
     </>
   );

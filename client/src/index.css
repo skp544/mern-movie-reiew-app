@@ -38,6 +38,10 @@
   background: rgb(143, 190, 245);
 }
 
+.flex-col-1 {
+  @apply flex flex-col gap-1;
+}
+
 @keyframes scale {
   0% {
     transform: scaleY(0);
