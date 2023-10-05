@@ -17,6 +17,27 @@
   animation: scale 0.2s reverse forwards;
 }
 
+.custom-scroll-bar::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+
+/* Track */
+.custom-scroll-bar::-webkit-scrollbar-track {
+  background: #222;
+}
+
+/* Handle */
+.custom-scroll-bar::-webkit-scrollbar-thumb {
+  background: rgb(224, 201, 251);
+  cursor: pointer;
+}
+
+/* Handle on hover */
+.custom-scroll-bar::-webkit-scrollbar-thumb:hover {
+  background: rgb(143, 190, 245);
+}
+
 @keyframes scale {
   0% {
     transform: scaleY(0);
