@@ -30,10 +30,14 @@ const LiveSearch = ({
   };
 
   const handleSelection = (selectedItem) => {
-    onSelect(selectedItem);
+    if (selectedItem) {
+      onSelect(selectedItem);
+      closeSearch();
+    }
   };
 
-  const handleKeyDown = ({ key }) => {
+  const handleKeyDown = (e) => {
+    const { key } = e;
     let nextCount;
 
     const keys = ["ArrowDown", "ArrowUp", "Enter", "Escape"];
@@ -52,7 +56,12 @@ const LiveSearch = ({
     }
 
     if (key === "Enter") {
+      e.preventDefault();
       return handleSelection(results[focusedIndex]);
+    }
+
+    if (key === "Escape") {
+      return closeSearch();
     }
 
     setFocusedIndex(nextCount);
@@ -80,6 +89,7 @@ const LiveSearch = ({
         onFocus={handleOnFocus}
         value={value}
         onChange={onChange}
+        autoComplete="off"
         // onBlur={handleOnBlur}
         // onKeyDown={handleKeyDown}
       />

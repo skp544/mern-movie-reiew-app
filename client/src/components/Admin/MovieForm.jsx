@@ -45,7 +45,7 @@ const MovieForm = () => {
   const [showWritersModal, setShowWritersModal] = useState(false);
   const [showCastModal, setShowCastModal] = useState(false);
 
-  const { title, storyline, director, writers, cast } = movieInfo;
+  const { title, storyline, director, writers, cast, tags } = movieInfo;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -123,7 +123,7 @@ const MovieForm = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit} className=" flex space-x-3">
+      <div className=" flex space-x-3">
         <div className="w-[70%] space-y-5 ">
           {/* title */}
           <div>
@@ -148,14 +148,14 @@ const MovieForm = () => {
               onChange={handleChange}
               id="storyline"
               placeholder="Enter Storyline"
-              className={`${commonInputClasses} resize-none h-24  border-b-2 `}
+              className={`${commonInputClasses} resize-none h-24  border-b-2 custom-scroll-bar `}
             />
           </div>
 
           {/* tags */}
           <div>
             <Label htmlFor={"tags"}>Tags</Label>
-            <TagsInput name="tags" onChange={updateTags} />
+            <TagsInput value={tags} name="tags" onChange={updateTags} />
           </div>
 
           {/* director */}
@@ -167,7 +167,7 @@ const MovieForm = () => {
               onSelect={updateDirector}
               results={results}
               renderItem={renderItem}
-              value={director.name}
+              value={director?.name}
             />
           </div>
 
@@ -205,11 +205,11 @@ const MovieForm = () => {
             </div>
             <CastForm onSubmit={updateCast} />
           </div>
-          <Submit value={"Upload"} />
+          <Submit value={"Upload"} onClick={handleSubmit} type={"button"} />
         </div>
 
         <div className="w-[30%] "></div>
-      </form>
+      </div>
       <WritersModal
         profiles={writers}
         visible={showWritersModal}
