@@ -20,6 +20,8 @@ import PosterSelector from "./Form/PosterSelector";
 import GenresSelector from "./GenresSelector";
 import GenresModal from "./Modals/GenresModal";
 import Selector from "./Form/Selector";
+import ActorForm from "./Form/ActorForm";
+import ActorUpload from "./Modals/ActorUpload";
 
 export {
   Navbar,
@@ -44,4 +46,6 @@ export {
   GenresSelector,
   GenresModal,
   Selector,
+  ActorForm,
+  ActorUpload,
 };

@@ -55,6 +55,11 @@ const CreateOptions = ({ options, visible, onClose }) => {
   const container = useRef();
   const containerID = "option-container";
 
+  const handleClick = (fn) => {
+    fn();
+    onClose();
+  };
+
   useEffect(() => {
     const handleClose = (e) => {
       if (!visible) return;
@@ -88,7 +93,12 @@ const CreateOptions = ({ options, visible, onClose }) => {
     >
       {options.map(({ title, onClick }) => {
         return (
-          <Option onClick={onClick} key={title}>
+          <Option
+            onClick={() => {
+              handleClick(onClick);
+            }}
+            key={title}
+          >
             {title}
           </Option>
         );

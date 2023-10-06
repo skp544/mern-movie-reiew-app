@@ -1,6 +1,13 @@
 import { commonPosterUi } from "../../utils/theme";
 
-const PosterSelector = ({ name, selectedPoster, onChange, accept }) => {
+const PosterSelector = ({
+  name,
+  selectedPoster,
+  onChange,
+  accept,
+  className,
+  label,
+}) => {
   return (
     <div>
       <input
@@ -15,24 +22,22 @@ const PosterSelector = ({ name, selectedPoster, onChange, accept }) => {
         {selectedPoster ? (
           <img
             src={selectedPoster}
-            className={`${commonPosterUi} object-cover`}
+            className={`${commonPosterUi}  object-cover ${className}`}
             alt="poster"
             onChange={onChange}
           />
         ) : (
-          <PosterUI />
+          <PosterUI label={label} className={className} />
         )}
       </label>
     </div>
   );
 };
 
-const PosterUI = () => {
+const PosterUI = ({ className, label }) => {
   return (
-    <div className={`${commonPosterUi}`}>
-      <span className=" dark:text-dark-subtle text-light-subtle">
-        Select Poster
-      </span>
+    <div className={`${commonPosterUi} ${className}`}>
+      <span className=" dark:text-dark-subtle text-light-subtle">{label}</span>
     </div>
   );
 };

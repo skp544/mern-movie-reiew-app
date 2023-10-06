@@ -278,6 +278,7 @@ const MovieForm = () => {
             name={"poster"}
             selectedPoster={selectedPosterForUI}
             onChange={handleChange}
+            label={"Select Poster"}
             accept="image/*"
           />
 

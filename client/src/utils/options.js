@@ -29,3 +29,18 @@ export const languageOptions = [
   { title: "Tamil", value: "Tamil" },
   { title: "Telugu", value: "Telugu" },
 ];
+
+export const genderOptions = [
+  {
+    title: "Male",
+    value: "male",
+  },
+  {
+    title: "Female",
+    value: "female",
+  },
+  {
+    title: "Other",
+    value: "other",
+  },
+];
