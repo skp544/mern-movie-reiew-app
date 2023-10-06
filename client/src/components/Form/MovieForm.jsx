@@ -48,6 +48,7 @@ const MovieForm = () => {
   const [showGenresModal, setShowGenresModal] = useState(false);
   const [selectedPosterForUI, setSelectedPosterForUI] = useState("");
 
+  // movie info
   const {
     title,
     storyline,
@@ -108,6 +109,7 @@ const MovieForm = () => {
     setMovieInfo({ ...movieInfo, writers: [...writers, profile] });
   };
 
+  // remove writer function
   const handleWriterRemove = (profileID) => {
     const { writers } = movieInfo;
 
@@ -119,6 +121,7 @@ const MovieForm = () => {
     setMovieInfo({ ...movieInfo, writers: [...newWriters] });
   };
 
+  // remove cast fucntion
   const handleCastRemove = (profileID) => {
     const { cast } = movieInfo;
 
@@ -130,35 +133,43 @@ const MovieForm = () => {
     setMovieInfo({ ...movieInfo, cast: [...newCast] });
   };
 
+  // hide writers modal
   const hideWritersModal = () => {
     setShowWritersModal(false);
   };
 
+  // displaying writer modal
   const displayWritersModal = () => {
     setShowWritersModal(true);
   };
 
+  // hiding cast modal
   const hideCastModal = () => {
     setShowCastModal(false);
   };
 
+  // displaying cast modal
   const displayCastModal = () => {
     setShowCastModal(true);
   };
 
+  // hide genres modal
   const hideGenresModal = () => {
     setShowGenresModal(false);
   };
 
+  // displaying genres modal
   const displayGenresModal = () => {
     setShowGenresModal(true);
   };
 
+  // updating cast
   const updateCast = (castInfo) => {
     const { cast } = movieInfo;
     setMovieInfo({ ...movieInfo, cast: [...cast, castInfo] });
   };
 
+  // updating genres
   const updateGenres = (genres) => {
     setMovieInfo({ ...movieInfo, genres });
   };

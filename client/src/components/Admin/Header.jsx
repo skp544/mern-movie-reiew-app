@@ -4,9 +4,13 @@ import { BsFillSunFill } from "react-icons/bs";
 import { useTheme } from "../../hooks";
 
 const Header = ({ onAddMovieClick, onAddActorClick }) => {
+  // state
   const [showOptions, setShowOptions] = useState(false);
+
+  // theme toggle hook
   const { toggleTheme } = useTheme();
 
+  // options
   const options = [
     {
       title: "Add Movie",
@@ -42,6 +46,7 @@ const Header = ({ onAddMovieClick, onAddActorClick }) => {
         </button>
       </div>
 
+      {/* creating options */}
       <CreateOptions
         visible={showOptions}
         onClose={() => setShowOptions(false)}
@@ -55,11 +60,13 @@ const CreateOptions = ({ options, visible, onClose }) => {
   const container = useRef();
   const containerID = "option-container";
 
+  // handling close
   const handleClick = (fn) => {
     fn();
     onClose();
   };
 
+  // handing create button opening and closing and animation
   useEffect(() => {
     const handleClose = (e) => {
       if (!visible) return;
@@ -79,6 +86,7 @@ const CreateOptions = ({ options, visible, onClose }) => {
   }, [visible]);
 
   if (!visible) return null;
+
   return (
     <div
       id={containerID}
@@ -107,6 +115,7 @@ const CreateOptions = ({ options, visible, onClose }) => {
   );
 };
 
+// options
 const Option = ({ onClick, children }) => {
   return (
     <button

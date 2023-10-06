@@ -1,14 +1,20 @@
+import { useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import toast from "react-hot-toast";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { uploadTrailer } from "../../api/movie";
-import { useState } from "react";
-import { ModalContainer, MovieForm } from "../";
+
+// components
+import { ModalContainer, MovieForm, UploadProgress } from "../";
 
 const MovieUpload = ({ visible, onClose }) => {
+  // state
   const [videoSelected, setVideoSelected] = useState(false);
   const [videoUploaded, setVideoUploaded] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [videoInfo, setVideoInfo] = useState({});
+
+  // movie info  state
   const [movieInfo, setMovieInfo] = useState({
     title: "",
     storyline: "",
@@ -28,8 +34,7 @@ const MovieUpload = ({ visible, onClose }) => {
     },
   });
 
-  const [videoInfo, setVideoInfo] = useState({});
-
+  // handling trailer upload
   const handleUploadTrailer = async (formData) => {
     const { success, message, response } = await uploadTrailer(
       formData,
@@ -47,10 +52,12 @@ const MovieUpload = ({ visible, onClose }) => {
     toast.success(message);
   };
 
+  // handling error if file is of another type
   const handleTypeError = (error) => {
     toast.error(error);
   };
 
+  // handling change function for video
   const handleChange = (file) => {
     const formData = new FormData();
     formData.append("video", file);
@@ -59,6 +66,7 @@ const MovieUpload = ({ visible, onClose }) => {
     handleUploadTrailer(formData);
   };
 
+  // function for finding the progress of trailer upload
   const getUploadProgressValue = () => {
     if (!videoUploaded && uploadProgress >= 100) {
       return "Processing";
@@ -68,6 +76,7 @@ const MovieUpload = ({ visible, onClose }) => {
 
   return (
     <ModalContainer visible={visible}>
+      {/* Upload progress */}
       {/* <UploadProgress
           width={uploadProgress}
           visible={!videoUploaded && videoSelected}
@@ -103,26 +112,6 @@ const TrailerSelector = ({ visible, handleChange, OnTypeError }) => {
           <p className="">Drop your file here</p>
         </div>
       </FileUploader>
-    </div>
-  );
-};
-
-const UploadProgress = ({ width, message, visible }) => {
-  if (!visible) {
-    return null;
-  }
-
-  return (
-    <div className=" dark:bg-secondary bg-white drop-shadow-lg rounded p-3 overflow-hidden">
-      <div className=" h-3 relative dark:bg-dark-subtle bg-light-subtle ">
-        <div
-          style={{ width: width + "%" }}
-          className="h-full absoulute bg-secondary dark:bg-white left-0"
-        />
-      </div>
-      <p className="text-center font-semibold dark:text-dark-subtle text-light-subtle animate-pulse mt-2">
-        {message}
-      </p>
     </div>
   );
 };

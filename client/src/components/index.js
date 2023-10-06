@@ -9,7 +9,7 @@ import NotVerified from "./User/NotVerified";
 import AdminNavbar from "./Admin/AdminNavbar";
 import Header from "./Admin/Header";
 import MovieUpload from "./Admin/MovieUpload";
-import MovieForm from "./Admin/MovieForm";
+import MovieForm from "./Form/MovieForm";
 import TagsInput from "./Form/TagsInput";
 import LiveSearch from "./Form/LiveSearch";
 import ModalContainer from "./Modals/ModalContainer";
@@ -27,6 +27,9 @@ import Label from "./Form/Label";
 import WriterSelector from "./WriterSelector";
 import ViewAllBtn from "./Form/ViewAllBtn";
 import LabelWithBadge from "./Form/LabelWithBadge";
+import ResultCard from "./ResultCard";
+import SearchResults from "./SearchResults";
+import UploadProgress from "./UploadProgress";
 
 export {
   Navbar,
@@ -58,4 +61,7 @@ export {
   WriterSelector,
   ViewAllBtn,
   LabelWithBadge,
+  ResultCard,
+  SearchResults,
+  UploadProgress,
 };

@@ -3,6 +3,7 @@ import { toast } from "react-hot-toast";
 
 export const SearchContext = createContext();
 
+// creating debounce function to handle live search field
 let timoeoutId;
 
 const debounce = (func, delay) => {
@@ -15,10 +16,12 @@ const debounce = (func, delay) => {
 };
 
 const SearchProvider = ({ children }) => {
+  // states
   const [searching, setSearching] = useState(false);
   const [results, setResults] = useState([]);
   const [resultNotFound, setResultNotFound] = useState(false);
 
+  // searching results and saving them in states
   const search = async (method, query, updaterFun) => {
     const { success, message, results } = await method(query);
 
@@ -34,8 +37,10 @@ const SearchProvider = ({ children }) => {
     updaterFun && updaterFun([...results]);
   };
 
+  // calling funion
   const debounceFunc = debounce(search, 300);
 
+  // handling search field when we type
   const handleSearch = (method, query, updaterFun) => {
     setSearching(true);
 
@@ -47,6 +52,7 @@ const SearchProvider = ({ children }) => {
     debounceFunc(method, query, updaterFun);
   };
 
+  // resetting all field
   const resetSearch = () => {
     setSearching(false);
     setResults([]);

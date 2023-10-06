@@ -1,11 +1,14 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { commonInputClasses } from "../../utils/theme";
-import { PosterSelector, Selector } from "../";
 import { genderOptions } from "../../utils/options";
 import { validateActor } from "../../utils/helper";
 import { ImSpinner3 } from "react-icons/im";
 
+// components
+import { PosterSelector, Selector } from "../";
+
+// default actor fields
 const defaultActorInfo = {
   name: "",
   about: "",
@@ -14,16 +17,20 @@ const defaultActorInfo = {
 };
 
 const ActorForm = ({ title, btnTitle, busy, onSubmit }) => {
+  // states
   const [actorInfo, setActorInfo] = useState({ ...defaultActorInfo });
   const [selectedAvatarForUI, setSelectedAvatarForUI] = useState("");
 
+  // destructring actor info
   const { name, about, gender } = actorInfo;
 
+  // updating poster url
   const updatePosterForUI = (file) => {
     const url = URL.createObjectURL(file);
     setSelectedAvatarForUI(url);
   };
 
+  // handle change function to store the values in fields
   const handleChange = ({ target }) => {
     const { value, name, files } = target;
 
@@ -36,6 +43,7 @@ const ActorForm = ({ title, btnTitle, busy, onSubmit }) => {
     setActorInfo({ ...actorInfo, [name]: value });
   };
 
+  // creating  actor and  validating it
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -45,8 +53,7 @@ const ActorForm = ({ title, btnTitle, busy, onSubmit }) => {
       return toast.error(error);
     }
 
-    // submit form
-
+    // creating a new form data and submitting it
     const formData = new FormData();
 
     for (let key in actorInfo) {
