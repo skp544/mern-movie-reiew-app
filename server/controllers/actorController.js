@@ -179,7 +179,7 @@ exports.searchActor = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Records Found",
-      actors,
+      results: actors,
     });
   } catch (error) {
     console.log("Error search actor controller");

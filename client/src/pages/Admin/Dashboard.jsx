@@ -1,7 +1,5 @@
-import { MovieUpload } from "../../components";
-
 const Dashboard = () => {
-  return <MovieUpload />;
+  return null;
 };
 
 export default Dashboard;

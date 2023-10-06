@@ -2,16 +2,17 @@ import { forwardRef, useEffect, useRef, useState } from "react";
 import { commonInputClasses } from "../../utils/theme";
 
 const LiveSearch = ({
-  results = [],
-  selectedResultStyle,
-  resultContainerStyle,
-  renderItem = null,
   value = "",
   placeholder = "",
+  results = [],
+  name,
+  resultContainerStyle,
+  selectedResultStyle,
+  inputStyle,
+  renderItem = null,
   onChange = null,
   onSelect = null,
-  inputStyle,
-  name,
+  visible,
 }) => {
   const [displaySearch, setDisplaySearch] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
@@ -37,33 +38,22 @@ const LiveSearch = ({
     }
   };
 
-  const handleKeyDown = (e) => {
-    const { key } = e;
+  const handleKeyDown = ({ key }) => {
     let nextCount;
 
     const keys = ["ArrowDown", "ArrowUp", "Enter", "Escape"];
-
-    if (!keys.includes(key)) {
-      return;
-    }
+    if (!keys.includes(key)) return;
 
     // move selection up and down
-
     if (key === "ArrowDown") {
       nextCount = (focusedIndex + 1) % results.length;
     }
     if (key === "ArrowUp") {
       nextCount = (focusedIndex + results.length - 1) % results.length;
     }
+    if (key === "Escape") return closeSearch();
 
-    if (key === "Enter") {
-      e.preventDefault();
-      return handleSelection(results[focusedIndex]);
-    }
-
-    if (key === "Escape") {
-      return closeSearch();
-    }
+    if (key === "Enter") return handleSelection(results[focusedIndex]);
 
     setFocusedIndex(nextCount);
   };
@@ -80,10 +70,13 @@ const LiveSearch = ({
   };
 
   useEffect(() => {
-    if (value) {
-      setDefaultValue(value);
-    }
+    if (value) setDefaultValue(value);
   }, [value]);
+
+  useEffect(() => {
+    if (visible) return setDisplaySearch(visible);
+    setDisplaySearch(false);
+  }, [visible]);
 
   return (
     <div
@@ -131,7 +124,7 @@ const SearchResults = ({
   const resultContainer = useRef();
 
   useEffect(() => {
-    resultContainer?.current?.scrollIntoView({
+    resultContainer.current?.scrollIntoView({
       behavior: "smooth",
       block: "center",
     });
@@ -188,4 +181,5 @@ const ResultCard = forwardRef((props, ref) => {
     </div>
   );
 });
+
 export default LiveSearch;

@@ -1,7 +1,7 @@
 const ModalContainer = ({ visible, children, onClose, ignoreContainer }) => {
   const handleClick = (e) => {
     if (e.target.id === "modal-container") {
-      onClose();
+      onClose && onClose();
     }
   };
 

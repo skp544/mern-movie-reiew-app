@@ -14,13 +14,15 @@ import {
   WritersModal,
 } from "../";
 
-import { results } from "../../utils/fakeData";
+// import { results } from "../../utils/fakeData";
 import { commonInputClasses } from "../../utils/theme";
 import {
   languageOptions,
   statusOptions,
   typeOptions,
 } from "../../utils/options";
+import { useSearch } from "../../hooks";
+import { searchActor } from "../../api/actor";
 
 const defaultMovieInfo = {
   title: "",
@@ -51,11 +53,18 @@ export const renderItem = (result) => {
 };
 
 const MovieForm = () => {
+  // states
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
   const [showWritersModal, setShowWritersModal] = useState(false);
   const [showCastModal, setShowCastModal] = useState(false);
   const [showGenresModal, setShowGenresModal] = useState(false);
   const [selectedPosterForUI, setSelectedPosterForUI] = useState("");
+  const [writerName, setWriterName] = useState("");
+  const [writersProfile, setWritersProfile] = useState([]);
+  const [directorProfile, setDirectorProfile] = useState([]);
+
+  // live search hook
+  const { handleSearch, searching, results, resetSearch } = useSearch();
 
   const {
     title,
@@ -70,16 +79,19 @@ const MovieForm = () => {
     status,
   } = movieInfo;
 
+  // submit function
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(movieInfo);
   };
 
+  // creating url for poster
   const updatePosterForUI = (file) => {
     const url = URL.createObjectURL(file);
     setSelectedPosterForUI(url);
   };
 
+  // handle change function handle all the changes in form
   const handleChange = ({ target }) => {
     const { value, name, files } = target;
 
@@ -92,14 +104,18 @@ const MovieForm = () => {
     setMovieInfo({ ...movieInfo, [name]: value });
   };
 
+  // tag update function
   const updateTags = (tags) => {
     setMovieInfo({ ...movieInfo, tags });
   };
 
+  // director update function
   const updateDirector = (profile) => {
     setMovieInfo({ ...movieInfo, director: profile });
+    resetSearch();
   };
 
+  // updating writers function
   const updateWriters = (profile) => {
     const { writers } = movieInfo;
 
@@ -110,6 +126,7 @@ const MovieForm = () => {
     }
 
     setMovieInfo({ ...movieInfo, writers: [...writers, profile] });
+    setWriterName("");
   };
 
   const handleWriterRemove = (profileID) => {
@@ -167,6 +184,18 @@ const MovieForm = () => {
     setMovieInfo({ ...movieInfo, genres });
   };
 
+  const handleProfileChange = ({ target }) => {
+    const { name, value } = target;
+    if (name === "director") {
+      setMovieInfo({ ...movieInfo, director: { name: value } });
+      handleSearch(searchActor, value, setDirectorProfile);
+    }
+    if (name === "writers") {
+      setWriterName(value);
+      handleSearch(searchActor, value, setWritersProfile);
+    }
+  };
+
   return (
     <>
       <h1 className="text-center text-2xl mt-2 mb-4 dark:text-white text-primary font-semibold">
@@ -215,9 +244,11 @@ const MovieForm = () => {
               name={"director"}
               placeholder="Search Profile"
               onSelect={updateDirector}
-              results={results}
+              results={directorProfile}
               renderItem={renderItem}
               value={director?.name}
+              onChange={handleProfileChange}
+              visible={directorProfile.length}
             />
           </div>
 
@@ -235,11 +266,14 @@ const MovieForm = () => {
               </ViewAllBtn>
             </div>
             <LiveSearch
-              name={"writers"}
-              placeholder="Search Profile"
-              onSelect={updateWriters}
-              results={results}
+              name="writers"
+              results={writersProfile}
+              placeholder="Search profile"
               renderItem={renderItem}
+              onSelect={updateWriters}
+              onChange={handleProfileChange}
+              value={writerName}
+              visible={writersProfile.length}
             />
           </div>
 

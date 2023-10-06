@@ -1,10 +1,13 @@
 import AuthProvider from "./AuthProvider";
+import SearchProvider from "./SearchProvider";
 import ThemeProvider from "./ThemeProvider";
 
 const ContextProviders = ({ children }) => {
   return (
     <AuthProvider>
-      <ThemeProvider>{children}</ThemeProvider>
+      <SearchProvider>
+        <ThemeProvider>{children}</ThemeProvider>
+      </SearchProvider>
     </AuthProvider>
   );
 };
