@@ -1,28 +1,29 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-
-import {
-  CastForm,
-  CastModal,
-  GenresModal,
-  GenresSelector,
-  LiveSearch,
-  PosterSelector,
-  Selector,
-  Submit,
-  TagsInput,
-  WritersModal,
-} from "../";
-
-// import { results } from "../../utils/fakeData";
 import { commonInputClasses } from "../../utils/theme";
 import {
   languageOptions,
   statusOptions,
   typeOptions,
 } from "../../utils/options";
-import { useSearch } from "../../hooks";
-import { searchActor } from "../../api/actor";
+
+// components
+import {
+  CastForm,
+  CastModal,
+  DirectorSelector,
+  GenresModal,
+  GenresSelector,
+  Label,
+  LabelWithBadge,
+  PosterSelector,
+  Selector,
+  Submit,
+  TagsInput,
+  ViewAllBtn,
+  WriterSelector,
+  WritersModal,
+} from "../";
 
 const defaultMovieInfo = {
   title: "",
@@ -39,19 +40,6 @@ const defaultMovieInfo = {
   status: "",
 };
 
-export const renderItem = (result) => {
-  return (
-    <div key={result.id} className="flex space-x-2 rounded overflow-hidden">
-      <img
-        src={result.avatar}
-        alt={result.name}
-        className="w-16 h-16 object-cover "
-      />
-      <p className="dark:text-white font-semibold">{result.name}</p>
-    </div>
-  );
-};
-
 const MovieForm = () => {
   // states
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
@@ -59,17 +47,10 @@ const MovieForm = () => {
   const [showCastModal, setShowCastModal] = useState(false);
   const [showGenresModal, setShowGenresModal] = useState(false);
   const [selectedPosterForUI, setSelectedPosterForUI] = useState("");
-  const [writerName, setWriterName] = useState("");
-  const [writersProfile, setWritersProfile] = useState([]);
-  const [directorProfile, setDirectorProfile] = useState([]);
-
-  // live search hook
-  const { handleSearch, searching, results, resetSearch } = useSearch();
 
   const {
     title,
     storyline,
-    director,
     writers,
     cast,
     tags,
@@ -112,7 +93,6 @@ const MovieForm = () => {
   // director update function
   const updateDirector = (profile) => {
     setMovieInfo({ ...movieInfo, director: profile });
-    resetSearch();
   };
 
   // updating writers function
@@ -126,7 +106,6 @@ const MovieForm = () => {
     }
 
     setMovieInfo({ ...movieInfo, writers: [...writers, profile] });
-    setWriterName("");
   };
 
   const handleWriterRemove = (profileID) => {
@@ -184,18 +163,6 @@ const MovieForm = () => {
     setMovieInfo({ ...movieInfo, genres });
   };
 
-  const handleProfileChange = ({ target }) => {
-    const { name, value } = target;
-    if (name === "director") {
-      setMovieInfo({ ...movieInfo, director: { name: value } });
-      handleSearch(searchActor, value, setDirectorProfile);
-    }
-    if (name === "writers") {
-      setWriterName(value);
-      handleSearch(searchActor, value, setWritersProfile);
-    }
-  };
-
   return (
     <>
       <h1 className="text-center text-2xl mt-2 mb-4 dark:text-white text-primary font-semibold">
@@ -238,19 +205,7 @@ const MovieForm = () => {
           </div>
 
           {/* director */}
-          <div className=" flex-col-1">
-            <Label htmlFor={"director"}>Director</Label>
-            <LiveSearch
-              name={"director"}
-              placeholder="Search Profile"
-              onSelect={updateDirector}
-              results={directorProfile}
-              renderItem={renderItem}
-              value={director?.name}
-              onChange={handleProfileChange}
-              visible={directorProfile.length}
-            />
-          </div>
+          <DirectorSelector onSelect={updateDirector} />
 
           {/* writers */}
           <div className=" flex-col-1">
@@ -265,16 +220,7 @@ const MovieForm = () => {
                 View All
               </ViewAllBtn>
             </div>
-            <LiveSearch
-              name="writers"
-              results={writersProfile}
-              placeholder="Search profile"
-              renderItem={renderItem}
-              onSelect={updateWriters}
-              onChange={handleProfileChange}
-              value={writerName}
-              visible={writersProfile.length}
-            />
+            <WriterSelector onSelect={updateWriters} />
           </div>
 
           {/* cast */}
@@ -369,54 +315,6 @@ const MovieForm = () => {
         previousSelection={genres}
       />
     </>
-  );
-};
-
-const Label = ({ children, htmlFor }) => {
-  return (
-    <label
-      htmlFor={htmlFor}
-      className=" dark:text-dark-subtle text-light-subtle font-semibold"
-    >
-      {children}
-    </label>
-  );
-};
-
-const LabelWithBadge = ({ children, htmlFor, badge = 0 }) => {
-  const renderBadge = () => {
-    if (!badge) {
-      return null;
-    }
-
-    return (
-      <span className="dark:bg-dark-subtle bg-light-subtle absolute top-0 right-0 translate-x-[1.3rem] -translate-y-[0.2rem] w-5 h-5 rounded-full flex items-center justify-center text-white text-[0.7rem]">
-        {badge <= 9 ? badge : `9+`}
-      </span>
-    );
-  };
-
-  return (
-    <div className=" relative">
-      <Label htmlFor={htmlFor}>{children}</Label>
-
-      {renderBadge()}
-    </div>
-  );
-};
-
-const ViewAllBtn = ({ visible, children, onClick }) => {
-  if (!visible) {
-    return null;
-  }
-  return (
-    <button
-      onClick={onClick}
-      type="button"
-      className="dark:text-white text-primary hover:underline transition"
-    >
-      {children}
-    </button>
   );
 };
 

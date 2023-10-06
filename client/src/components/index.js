@@ -22,6 +22,11 @@ import GenresModal from "./Modals/GenresModal";
 import Selector from "./Form/Selector";
 import ActorForm from "./Form/ActorForm";
 import ActorUpload from "./Modals/ActorUpload";
+import DirectorSelector from "./DirectorSelector";
+import Label from "./Form/Label";
+import WriterSelector from "./WriterSelector";
+import ViewAllBtn from "./Form/ViewAllBtn";
+import LabelWithBadge from "./Form/LabelWithBadge";
 
 export {
   Navbar,
@@ -48,4 +53,9 @@ export {
   Selector,
   ActorForm,
   ActorUpload,
+  DirectorSelector,
+  Label,
+  WriterSelector,
+  ViewAllBtn,
+  LabelWithBadge,
 };

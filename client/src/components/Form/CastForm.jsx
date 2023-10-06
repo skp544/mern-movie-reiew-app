@@ -1,9 +1,11 @@
 import { useState } from "react";
-import LiveSearch from "./LiveSearch";
 import { commonInputClasses } from "../../utils/theme";
-import { results } from "../../utils/fakeData";
-import { renderItem } from "../Admin/MovieForm";
 import toast from "react-hot-toast";
+import { renderItem } from "../../utils/helper";
+import { useSearch } from "../../hooks";
+
+import LiveSearch from "./LiveSearch";
+import { searchActor } from "../../api/actor";
 
 const defaultCastInfo = {
   profile: {},
@@ -13,14 +15,17 @@ const defaultCastInfo = {
 
 const CastForm = ({ onSubmit }) => {
   const [castInfo, setCastInfo] = useState({ ...defaultCastInfo });
+  const [profiles, setProfiles] = useState([]);
 
   const { leadActor, profile, roleAs } = castInfo;
+
+  const { handleSearch, resetSearch } = useSearch();
 
   const handleOnChange = ({ target }) => {
     const { checked, name, value } = target;
 
     if (name === leadActor) {
-      return setCastInfo({ ...castInfo, leadActor });
+      return setCastInfo({ ...castInfo, leadActor: checked });
     }
 
     setCastInfo({ ...castInfo, [name]: value });
@@ -42,7 +47,21 @@ const CastForm = ({ onSubmit }) => {
     }
 
     onSubmit(castInfo);
-    setCastInfo({ ...defaultCastInfo });
+    setCastInfo({ ...defaultCastInfo, profile: { name: "" } });
+
+    resetSearch();
+    setProfiles([]);
+  };
+
+  const handleProfileChange = ({ target }) => {
+    const { value } = target;
+
+    const { profile } = castInfo;
+
+    profile.name = value;
+    setCastInfo({ ...castInfo, ...profile });
+
+    handleSearch(searchActor, value, setProfiles);
   };
 
   return (
@@ -59,9 +78,10 @@ const CastForm = ({ onSubmit }) => {
       <LiveSearch
         placeholder="Search Profile"
         value={profile.name}
-        results={results}
+        results={profiles}
         onSelect={handleProfileSelect}
         renderItem={renderItem}
+        onChange={handleProfileChange}
       />
       <span className="dark:text-dark-subtle text-light-subtle font-semibold">
         as
