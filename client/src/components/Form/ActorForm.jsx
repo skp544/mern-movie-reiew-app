@@ -1,9 +1,10 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { commonInputClasses } from "../../utils/theme";
 import { PosterSelector, Selector } from "../";
 import { genderOptions } from "../../utils/options";
 import { validateActor } from "../../utils/helper";
-import toast from "react-hot-toast";
+import { ImSpinner3 } from "react-icons/im";
 
 const defaultActorInfo = {
   name: "",
@@ -12,7 +13,7 @@ const defaultActorInfo = {
   gender: "",
 };
 
-const ActorForm = ({ title, btnTitle, onSubmit }) => {
+const ActorForm = ({ title, btnTitle, busy, onSubmit }) => {
   const [actorInfo, setActorInfo] = useState({ ...defaultActorInfo });
   const [selectedAvatarForUI, setSelectedAvatarForUI] = useState("");
 
@@ -46,7 +47,15 @@ const ActorForm = ({ title, btnTitle, onSubmit }) => {
 
     // submit form
 
-    onSubmit(actorInfo);
+    const formData = new FormData();
+
+    for (let key in actorInfo) {
+      if (key) {
+        formData.append(key, actorInfo[key]);
+      }
+    }
+
+    onSubmit(formData);
   };
 
   return (
@@ -59,10 +68,10 @@ const ActorForm = ({ title, btnTitle, onSubmit }) => {
           {title}
         </h1>
         <button
-          className="px-4 py-2 bg-primary text-white dark:bg-white dark:text-primary hover:opacity-80 transition rounded-md font-semibold"
+          className="h-8 w-24 flex justify-center items-center bg-primary text-white dark:bg-white dark:text-primary hover:opacity-80 transition rounded-md font-semibold"
           type="submit"
         >
-          {btnTitle}
+          {busy ? <ImSpinner3 className="animate-spin" /> : btnTitle}
         </button>
       </div>
       <div className="flex space-x-4 mt-2">
@@ -85,7 +94,7 @@ const ActorForm = ({ title, btnTitle, onSubmit }) => {
           />
 
           <textarea
-            className={`${commonInputClasses} resize-none border-b-2 h-full`}
+            className={`${commonInputClasses} resize-none border-b-2 h-full custom-scroll-bar`}
             placeholder="About..."
             name={"about"}
             onChange={handleChange}

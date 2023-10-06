@@ -1,3 +1,5 @@
+export const getToken = () => localStorage.getItem("auth-token");
+
 export const isValidEmail = (email) => {
   const isValid = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -20,4 +22,14 @@ export const validateActor = ({ name, about, gender, avatar }) => {
   }
 
   return { error: null };
+};
+
+export const catchError = (error) => {
+  const { response } = error;
+
+  if (response?.data) {
+    return response?.data;
+  }
+
+  return { error: error.message || error };
 };
