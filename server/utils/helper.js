@@ -70,8 +70,6 @@ exports.formatActor = (actor) => {
 exports.parseData = (req, res, next) => {
   const { trailer, genres, cast, tags, writers } = req.body;
 
-  console.log(req.body);
-
   if (trailer) {
     req.body.trailer = JSON.parse(trailer);
   }

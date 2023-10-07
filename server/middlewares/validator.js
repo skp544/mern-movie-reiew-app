@@ -105,8 +105,6 @@ exports.validateMovie = [
 
         return true;
       } catch (error) {
-        console.log("catch");
-
         throw Error("Trailer url is invalid!");
       }
     }),

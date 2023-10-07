@@ -60,30 +60,33 @@ exports.createMovie = async (req, res) => {
       newMovie.writers = writers;
     }
 
-    // uploading poster
-    const {
-      secure_url: url,
-      public_id,
-      responsive_breakpoints,
-    } = await uploadPosterCloud(file);
+    // uploading poster only if present
 
-    const posterObj = {
-      url,
-      public_id,
-      reponsive: [],
-    };
+    if (file) {
+      const {
+        secure_url: url,
+        public_id,
+        responsive_breakpoints,
+      } = await uploadPosterCloud(file);
 
-    const { breakpoints } = responsive_breakpoints[0];
+      const posterObj = {
+        url,
+        public_id,
+        reponsive: [],
+      };
 
-    if (breakpoints.length) {
-      for (let imgObj of breakpoints) {
-        const { secure_url } = imgObj;
-        posterObj.reponsive.push(secure_url);
+      const { breakpoints } = responsive_breakpoints[0];
+
+      if (breakpoints.length) {
+        for (let imgObj of breakpoints) {
+          const { secure_url } = imgObj;
+          posterObj.reponsive.push(secure_url);
+        }
       }
-    }
 
-    // adding posterObj
-    newMovie.poster = posterObj;
+      // adding posterObj
+      newMovie.poster = posterObj;
+    }
 
     // saving movie
     await newMovie.save();

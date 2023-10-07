@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import toast from "react-hot-toast";
 import { AiOutlineCloudUpload } from "react-icons/ai";
-import { uploadTrailer } from "../../api/movie";
+import { uploadMovie, uploadTrailer } from "../../api/movie";
 
 // components
 import { ModalContainer, MovieForm, UploadProgress } from "../";
@@ -13,26 +13,7 @@ const MovieUpload = ({ visible, onClose }) => {
   const [videoUploaded, setVideoUploaded] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [videoInfo, setVideoInfo] = useState({});
-
-  // movie info  state
-  const [movieInfo, setMovieInfo] = useState({
-    title: "",
-    storyline: "",
-    cast: [],
-    tags: [],
-    director: {},
-    writer: [],
-    releaseDate: "",
-    poster: null,
-    genres: [],
-    type: "",
-    language: "",
-    status: "",
-    trailer: {
-      url: "",
-      public_id: "",
-    },
-  });
+  const [busy, setBusy] = useState(false);
 
   // handling trailer upload
   const handleUploadTrailer = async (formData) => {
@@ -74,22 +55,47 @@ const MovieUpload = ({ visible, onClose }) => {
     return `Upload progress ${uploadProgress}`;
   };
 
+  const handleSubmit = async (data) => {
+    if (!videoInfo.url || !videoInfo.public_id) {
+      return toast.error("Trailer is Missing!");
+    }
+
+    setBusy(true);
+
+    data.append("trailer", JSON.stringify(videoInfo));
+
+    const { success, message } = await uploadMovie(data);
+
+    if (!success) {
+      setBusy(false);
+      return toast.error(message);
+    }
+
+    setBusy(false);
+    toast.success(message);
+    onClose();
+  };
+
   return (
     <ModalContainer visible={visible}>
       {/* Upload progress */}
-      {/* <UploadProgress
+      <div className="mb-4">
+        <UploadProgress
           width={uploadProgress}
           visible={!videoUploaded && videoSelected}
           message={getUploadProgressValue()}
         />
+      </div>
 
+      {!videoSelected ? (
         <TrailerSelector
           visible={!videoSelected}
           handleChange={handleChange}
           OnTypeError={handleTypeError}
-        /> */}
-
-      <MovieForm />
+        />
+      ) : (
+        <MovieForm busy={busy} onSubmit={!busy ? handleSubmit : null} />
+      )}
     </ModalContainer>
   );
 };

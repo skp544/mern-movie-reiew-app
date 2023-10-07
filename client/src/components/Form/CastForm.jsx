@@ -3,9 +3,10 @@ import { commonInputClasses } from "../../utils/theme";
 import toast from "react-hot-toast";
 import { renderItem } from "../../utils/helper";
 import { useSearch } from "../../hooks";
-
-import LiveSearch from "./LiveSearch";
 import { searchActor } from "../../api/actor";
+
+// component
+import { LiveSearch } from "../";
 
 const defaultCastInfo = {
   profile: {},
@@ -14,45 +15,43 @@ const defaultCastInfo = {
 };
 
 const CastForm = ({ onSubmit }) => {
+  // states
   const [castInfo, setCastInfo] = useState({ ...defaultCastInfo });
   const [profiles, setProfiles] = useState([]);
 
+  // destructuring cast info
   const { leadActor, profile, roleAs } = castInfo;
 
+  // live search hook
   const { handleSearch, resetSearch } = useSearch();
 
+  // handling change in input filed
   const handleOnChange = ({ target }) => {
     const { checked, name, value } = target;
 
-    if (name === leadActor) {
+    if (name === "leadActor")
       return setCastInfo({ ...castInfo, leadActor: checked });
-    }
 
     setCastInfo({ ...castInfo, [name]: value });
   };
 
+  // handling profile selection
   const handleProfileSelect = (profile) => {
     setCastInfo({ ...castInfo, profile });
   };
 
+  // submint cast
   const handleSubmit = () => {
     const { profile, roleAs } = castInfo;
-
-    if (!profile.name) {
-      return toast.error("Cast Profile is Missing!");
-    }
-
-    if (!roleAs.trim()) {
-      return toast.error("Cast Role is Missing!");
-    }
+    if (!profile.name) return toast.error("error", "Cast profile is missing!");
+    if (!roleAs.trim()) return toast.error("error", "Cast role is missing!");
 
     onSubmit(castInfo);
     setCastInfo({ ...defaultCastInfo, profile: { name: "" } });
-
     resetSearch();
-    setProfiles([]);
   };
 
+  // handling change in profile
   const handleProfileChange = ({ target }) => {
     const { value } = target;
 

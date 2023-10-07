@@ -46,3 +46,77 @@ export const renderItem = (result) => {
     </div>
   );
 };
+
+export const validateMovie = (movieInfo) => {
+  const {
+    title,
+    storyline,
+    language,
+    releaseDate,
+    status,
+    type,
+    genres,
+    tags,
+    cast,
+  } = movieInfo;
+
+  if (!title.trim()) {
+    return { error: "Title is missing!" };
+  }
+  if (!storyline.trim()) {
+    return { error: "Storyline is missing!" };
+  }
+  if (!language.trim()) {
+    return { error: "Language is missing!" };
+  }
+
+  if (!releaseDate.trim()) {
+    return { error: "Release Date is missing!" };
+  }
+
+  if (!status.trim()) {
+    return { error: "Status is missing!" };
+  }
+
+  if (!type.trim()) {
+    return { error: "Type is missing!" };
+  }
+
+  // validation of genres - we are checking if genres array or not
+  if (!genres.length) {
+    return { error: "Genres are missing!" };
+  }
+
+  // here we are checking genres need to field with string value
+  for (let gen of genres) {
+    if (!gen.trim()) {
+      return { error: "Invalid Genres! " };
+    }
+  }
+
+  // validation of tags - we are checking if tags array or not
+  if (!tags.length) {
+    return { error: "Tags are missing!" };
+  }
+
+  // here we are checking tags need to field with string value
+  for (let t of tags) {
+    if (!t.trim()) {
+      return { error: "Invalid Tags! " };
+    }
+  }
+
+  // validation of cast - we are checking if cast array or not
+  if (!cast.length) {
+    return { error: "Cast and crew are missing!" };
+  }
+
+  // here we are checking cast need to field with string value
+  for (let c of cast) {
+    if (typeof c !== "object") {
+      return { error: "Invalid Cast! " };
+    }
+  }
+
+  return { error: null };
+};
