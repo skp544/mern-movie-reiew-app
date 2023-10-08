@@ -4,6 +4,7 @@ import { getActors } from "../../api/actor";
 
 import { toast } from "react-hot-toast";
 import { NextAndPrevButton } from "../../components";
+import UpdateActor from "../../components/Modals/UpdateActor";
 
 let currentPageNo = 0;
 const limit = 20;
@@ -11,6 +12,7 @@ const limit = 20;
 const Actors = () => {
   const [actors, setActors] = useState([]);
   const [reachedToEnd, setReachedToEnd] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
   // const [currentPageNo, setCurrentPageNo] = useState(0);
 
   const fetchActors = async (pageNo) => {
@@ -53,27 +55,43 @@ const Actors = () => {
     fetchActors(currentPageNo);
   };
 
+  const handleOnEditClick = (profile) => {
+    setShowUpdateModal(true);
+    console.log(profile);
+  };
+
+  const hideUpdateModal = () => {};
+
   useEffect(() => {
     fetchActors(currentPageNo);
   }, []);
 
   return (
-    <div className=" p-5">
-      <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  xl:grid-cols-4 gap-4">
-        {actors.map((actor) => {
-          return <ActorProfile key={actor.id} profile={actor} />;
-        })}
+    <>
+      <div className=" p-5">
+        <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  xl:grid-cols-4 gap-4">
+          {actors.map((actor) => {
+            return (
+              <ActorProfile
+                OnEditClick={() => handleOnEditClick(actor)}
+                key={actor.id}
+                profile={actor}
+              />
+            );
+          })}
+        </div>
+        <NextAndPrevButton
+          onNextClick={handleOnNextClick}
+          onPrevClick={handleOnPrevClick}
+          className=" mt-8"
+        />
       </div>
-      <NextAndPrevButton
-        onNextClick={handleOnNextClick}
-        onPrevClick={handleOnPrevClick}
-        className=" mt-8"
-      />
-    </div>
+      <UpdateActor visible={showUpdateModal} onClose={hideUpdateModal} />
+    </>
   );
 };
 
-const ActorProfile = ({ profile }) => {
+const ActorProfile = ({ profile, OnEditClick }) => {
   const [showOptions, setShowOptions] = useState(false);
   const acceptedNameLength = 15;
 
@@ -117,7 +135,7 @@ const ActorProfile = ({ profile }) => {
           </p>
         </div>
 
-        <Options visible={showOptions} />
+        <Options OnEditClick={OnEditClick} visible={showOptions} />
       </div>
     </div>
   );

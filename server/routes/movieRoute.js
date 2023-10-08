@@ -12,6 +12,7 @@ const {
   createMovie,
   updateWithPoster,
   removeMovie,
+  getMovies,
 } = require("../controllers/movieController");
 
 // helper functions
@@ -58,6 +59,8 @@ router.patch(
   validate,
   updateWithPoster
 );
+
+router.get("/movies", isAuth, isAdmin, getMovies);
 
 router.delete("/:movieId", isAuth, isAdmin, removeMovie);
 module.exports = router;

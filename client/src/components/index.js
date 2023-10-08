@@ -33,6 +33,7 @@ import UploadProgress from "./UploadProgress";
 import AppInfoBox from "./Dashboard/AppInfoBox";
 import LatestUploads from "./Dashboard/LatestUploads";
 import NextAndPrevButton from "./NextAndPrevButton";
+import MovieListItem from "./Dashboard/MovieListItem";
 
 export {
   Navbar,
@@ -70,4 +71,5 @@ export {
   AppInfoBox,
   LatestUploads,
   NextAndPrevButton,
+  MovieListItem,
 };

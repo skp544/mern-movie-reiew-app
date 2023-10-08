@@ -285,7 +285,7 @@ exports.getActors = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Error in Getting Error!",
+      message: "Error in Getting Movies!",
     });
   }
 };

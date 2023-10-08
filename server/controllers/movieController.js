@@ -447,3 +447,42 @@ exports.removeMovie = async (req, res) => {
     });
   }
 };
+
+exports.getMovies = async (req, res) => {
+  try {
+    const { pageNo = 0, limit = 10 } = req.query;
+    const result = await Movie.find({})
+      .sort({ createdAt: -1 })
+      .skip(parseInt(pageNo) * parseInt(limit))
+      .limit(parseInt(limit));
+
+    if (!result) {
+      return res.status(401).json({
+        success: false,
+        message: "Movies Not Found!",
+      });
+    }
+
+    // formating actor
+    const movies = result.map((movie) => ({
+      id: movie._id,
+      title: movie.title,
+      poster: movie?.poster?.url,
+      genres: movie.genres,
+      status: movie.status,
+    }));
+
+    return res.status(201).json({
+      success: true,
+      message: "Movies Found!",
+      movies: movies,
+    });
+  } catch (error) {
+    console.log("Error in get movies controller");
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Error in Getting Movies!",
+    });
+  }
+};
