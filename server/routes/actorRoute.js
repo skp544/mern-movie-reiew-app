@@ -9,6 +9,7 @@ const {
   searchActor,
   getLatestActor,
   getSingleActor,
+  getActors,
 } = require("../controllers/actorController");
 
 // middlewares
@@ -42,6 +43,7 @@ router.post(
 router.delete("/:actorId", isAuth, isAdmin, removeActor);
 router.get("/search", isAuth, isAdmin, searchActor);
 router.get("/latest-uploads", isAuth, isAdmin, getLatestActor);
+router.get("/actors", isAuth, isAdmin, getActors);
 router.get("/single/:id", getSingleActor);
 
 module.exports = router;

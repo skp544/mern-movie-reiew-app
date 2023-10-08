@@ -1,36 +1,73 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
+import { getActors } from "../../api/actor";
+
+import { toast } from "react-hot-toast";
+import { NextAndPrevButton } from "../../components";
+
+let currentPageNo = 0;
+const limit = 20;
 
 const Actors = () => {
-  return (
-    <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  xl:grid-cols-4 gap-4 my-5">
-      <ActorProfile
-        profile={{
-          name: "John doe",
-          about:
-            " Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore error beatae quaerat nostrum harum aspernatur. Id iste obcaecati vitae harum. Id autem similique hic ad aliquam nam ex perferendis sequi!",
-          avatar:
-            "https://plus.unsplash.com/premium_photo-1695755054497-54fe299c0654?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80",
-        }}
-      />
+  const [actors, setActors] = useState([]);
+  const [reachedToEnd, setReachedToEnd] = useState(false);
+  // const [currentPageNo, setCurrentPageNo] = useState(0);
 
-      <ActorProfile
-        profile={{
-          name: "John doe",
-          about:
-            " Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore error beatae quaerat nostrum harum aspernatur. Id iste obcaecati vitae harum. Id autem similique hic ad aliquam nam ex perferendis sequi!",
-          avatar:
-            "https://plus.unsplash.com/premium_photo-1695755054497-54fe299c0654?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80",
-        }}
-      />
-      <ActorProfile
-        profile={{
-          name: "John doe",
-          about:
-            " Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore error beatae quaerat nostrum harum aspernatur. Id iste obcaecati vitae harum. Id autem similique hic ad aliquam nam ex perferendis sequi!",
-          avatar:
-            "https://plus.unsplash.com/premium_photo-1695755054497-54fe299c0654?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80",
-        }}
+  const fetchActors = async (pageNo) => {
+    const { profiles, success, message } = await getActors(pageNo, limit);
+
+    if (!success) {
+      return toast.error(message);
+    }
+
+    if (!profiles.length) {
+      // setCurrentPageNo(pageNo - 1);
+      currentPageNo = pageNo - 1;
+      return setReachedToEnd(true);
+    }
+
+    setActors([...profiles]);
+  };
+
+  const handleOnNextClick = () => {
+    if (reachedToEnd) {
+      toast.error("No More actors!");
+      return;
+    }
+
+    // setCurrentPageNo((prev) => prev + 1);
+    currentPageNo += 1;
+    fetchActors(currentPageNo);
+  };
+
+  const handleOnPrevClick = () => {
+    if (currentPageNo <= 0) {
+      currentPageNo = 0;
+      setReachedToEnd(false);
+      toast.error("You are on first page!");
+      return;
+    }
+    setReachedToEnd(false);
+    currentPageNo -= 1;
+
+    fetchActors(currentPageNo);
+  };
+
+  useEffect(() => {
+    fetchActors(currentPageNo);
+  }, []);
+
+  return (
+    <div className=" p-5">
+      <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  xl:grid-cols-4 gap-4">
+        {actors.map((actor) => {
+          return <ActorProfile key={actor.id} profile={actor} />;
+        })}
+      </div>
+      <NextAndPrevButton
+        onNextClick={handleOnNextClick}
+        onPrevClick={handleOnPrevClick}
+        className=" mt-8"
       />
     </div>
   );
@@ -38,12 +75,21 @@ const Actors = () => {
 
 const ActorProfile = ({ profile }) => {
   const [showOptions, setShowOptions] = useState(false);
+  const acceptedNameLength = 15;
 
   const handleOnMouseEnter = () => {
     setShowOptions(true);
   };
   const handleOnMouseLeave = () => {
     setShowOptions(false);
+  };
+
+  const getName = (name) => {
+    if (name.length <= acceptedNameLength) {
+      return name;
+    }
+
+    return name.substring(0, acceptedNameLength) + "...";
   };
 
   if (!profile) return null;
@@ -63,11 +109,11 @@ const ActorProfile = ({ profile }) => {
         />
 
         <div className=" px-2">
-          <h2 className=" text-xl text-primary dark:text-white font-semibold">
-            {name}
+          <h2 className=" text-xl text-primary dark:text-white font-semibold whitespace-nowrap mb-1">
+            {getName(name)}
           </h2>
-          <p className="text-primary dark:text-white">
-            {about.substring(0, 50)}
+          <p className="text-primary dark:text-white text-sm">
+            {about.substring(0, 40) + " ..."}
           </p>
         </div>
 
@@ -85,14 +131,14 @@ const Options = ({ visible, onDeleteClick, OnEditClick }) => {
   return (
     <div className=" absolute inset-0 bg-primary bg-opacity-25 backdrop-blur-sm  flex items-center justify-center space-x-4">
       <button
-        className=" p-2 rounded-full bg-white text-primary hover:opacity-80 transition"
+        className=" p-2 rounded-full bg-white text-primary hover:opacity-80  hover:bg-red-500 hover:text-white transition-all duration-200"
         type="button"
         onClick={onDeleteClick}
       >
         <BsTrash />
       </button>
       <button
-        className=" p-2 rounded-full bg-white text-primary hover:opacity-80 transition"
+        className=" p-2 rounded-full bg-white text-primary hover:opacity-80 hover:bg-orange-600 hover:text-white transition-all duration-200"
         type="button"
       >
         <BsPencilSquare onClick={OnEditClick} />

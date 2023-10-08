@@ -32,6 +32,7 @@ import SearchResults from "./SearchResults";
 import UploadProgress from "./UploadProgress";
 import AppInfoBox from "./Dashboard/AppInfoBox";
 import LatestUploads from "./Dashboard/LatestUploads";
+import NextAndPrevButton from "./NextAndPrevButton";
 
 export {
   Navbar,
@@ -68,4 +69,5 @@ export {
   UploadProgress,
   AppInfoBox,
   LatestUploads,
+  NextAndPrevButton,
 };

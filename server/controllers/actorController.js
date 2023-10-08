@@ -254,3 +254,38 @@ exports.getSingleActor = async (req, res) => {
     });
   }
 };
+
+exports.getActors = async (req, res) => {
+  try {
+    const { pageNo, limit } = req.query;
+
+    const result = await Actor.find({})
+      .sort({ createdAt: -1 })
+      .skip(parseInt(pageNo) * parseInt(limit))
+      .limit(parseInt(limit));
+
+    if (!result) {
+      return res.status(401).json({
+        success: false,
+        message: "Actors Not Found!",
+      });
+    }
+
+    // formating actor
+    const actors = result.map((actor) => formatActor(actor));
+
+    return res.status(201).json({
+      success: true,
+      message: "Actors Found!",
+      profiles: actors,
+    });
+  } catch (error) {
+    console.log("Error get actor controller");
+    console.log(error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Error in Getting Error!",
+    });
+  }
+};
