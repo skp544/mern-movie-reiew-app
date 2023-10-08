@@ -30,6 +30,8 @@ import LabelWithBadge from "./Form/LabelWithBadge";
 import ResultCard from "./ResultCard";
 import SearchResults from "./SearchResults";
 import UploadProgress from "./UploadProgress";
+import AppInfoBox from "./Dashboard/AppInfoBox";
+import LatestUploads from "./Dashboard/LatestUploads";
 
 export {
   Navbar,
@@ -64,4 +66,6 @@ export {
   ResultCard,
   SearchResults,
   UploadProgress,
+  AppInfoBox,
+  LatestUploads,
 };
