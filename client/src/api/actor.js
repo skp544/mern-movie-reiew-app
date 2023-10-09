@@ -25,7 +25,6 @@ export const searchActor = async (query) => {
     const { data } = await client(`/actor/search?name=${query}`, {
       headers: {
         Authorization: "Bearer " + token,
-        "Content-Type": "multipart/form-data",
       },
     });
 
@@ -48,6 +47,39 @@ export const getActors = async (pageNo, limit) => {
         },
       }
     );
+
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};
+
+export const updateActor = async (id, formData) => {
+  const token = getToken();
+
+  try {
+    const { data } = await client.post(`/actor/update/${id}`, formData, {
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};
+
+export const deleteActor = async (id) => {
+  const token = getToken();
+
+  try {
+    const { data } = await client.delete(`/actor/${id}`, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
 
     return data;
   } catch (error) {

@@ -1,18 +1,34 @@
 import { useEffect, useState } from "react";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
-import { getActors } from "../../api/actor";
+import { deleteActor, getActors, searchActor } from "../../api/actor";
 
 import { toast } from "react-hot-toast";
-import { NextAndPrevButton } from "../../components";
+import {
+  ConfirmModal,
+  NextAndPrevButton,
+  NotFoundText,
+  SearchForm,
+} from "../../components";
 import UpdateActor from "../../components/Modals/UpdateActor";
+import { useSearch } from "../../hooks";
 
 let currentPageNo = 0;
 const limit = 20;
 
 const Actors = () => {
+  // states
   const [actors, setActors] = useState([]);
   const [reachedToEnd, setReachedToEnd] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(null);
+  const [results, setResults] = useState([]);
+
+  // search provider hook
+  const { handleSearch, resetSearch, resultNotFound, setResultNotFound } =
+    useSearch();
+
   // const [currentPageNo, setCurrentPageNo] = useState(0);
 
   const fetchActors = async (pageNo) => {
@@ -57,10 +73,67 @@ const Actors = () => {
 
   const handleOnEditClick = (profile) => {
     setShowUpdateModal(true);
-    console.log(profile);
+    setSelectedProfile(profile);
+    // console.log(profile);
   };
 
-  const hideUpdateModal = () => {};
+  const hideUpdateModal = () => {
+    setShowUpdateModal(false);
+  };
+
+  const handleOnActorUpdate = (profile) => {
+    const updatedActors = actors.map((actor) => {
+      if (profile.id === actor.id) {
+        return profile;
+      }
+      return actor;
+    });
+
+    setActors([...updatedActors]);
+  };
+
+  const handleOnSearchSubmit = (value) => {
+    setResultNotFound(false);
+    if (value === "") {
+      handleSearchFormReset();
+    }
+
+    handleSearch(searchActor, value, setResults);
+  };
+
+  const handleSearchFormReset = () => {
+    setResultNotFound(false);
+    resetSearch();
+    setResults([]);
+  };
+
+  const handleOnDeleteClick = (profile) => {
+    setSelectedProfile(profile);
+    setShowConfirmModal(true);
+  };
+
+  const handleOnDeleteConfirm = async () => {
+    // setBusy(true);
+    setShowConfirmModal(false);
+    return toast.error("Delting fuctionality not added!");
+
+    /*
+    const { success, message } = await deleteActor(selectedProfile.id);
+    setBusy(false);
+
+    if (!success) {
+      return toast.error(message);
+    }
+
+    toast.success(message);
+    setShowConfirmModal(false);
+    fetchActors(currentPageNo)
+    */
+  };
+
+  const hideConfirmModal = () => {
+    setShowConfirmModal(false);
+  };
 
   useEffect(() => {
     fetchActors(currentPageNo);
@@ -69,29 +142,63 @@ const Actors = () => {
   return (
     <>
       <div className=" p-5">
-        <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  xl:grid-cols-4 gap-4">
-          {actors.map((actor) => {
-            return (
-              <ActorProfile
-                OnEditClick={() => handleOnEditClick(actor)}
-                key={actor.id}
-                profile={actor}
-              />
-            );
-          })}
+        <div className=" flex justify-end mb-5">
+          <SearchForm
+            onSubmit={handleOnSearchSubmit}
+            placeholder={"Search Actors"}
+            showResetIcon={results.length || resultNotFound}
+            onReset={handleSearchFormReset}
+          />
         </div>
-        <NextAndPrevButton
-          onNextClick={handleOnNextClick}
-          onPrevClick={handleOnPrevClick}
-          className=" mt-8"
-        />
+        {<NotFoundText text={"Result Not Found"} visible={resultNotFound} />}
+
+        <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  xl:grid-cols-4 gap-4">
+          {results.length || resultNotFound
+            ? results.map((actor) => (
+                <ActorProfile
+                  OnEditClick={() => handleOnEditClick(actor)}
+                  key={actor.id}
+                  profile={actor}
+                  onDeleteClick={() => handleOnDeleteClick(actor)}
+                />
+              ))
+            : actors.map((actor) => (
+                <ActorProfile
+                  OnEditClick={() => handleOnEditClick(actor)}
+                  key={actor.id}
+                  profile={actor}
+                  onDeleteClick={() => handleOnDeleteClick(actor)}
+                />
+              ))}
+        </div>
+
+        {!results.length && !resultNotFound ? (
+          <NextAndPrevButton
+            onNextClick={handleOnNextClick}
+            onPrevClick={handleOnPrevClick}
+            className=" mt-8"
+          />
+        ) : null}
       </div>
-      <UpdateActor visible={showUpdateModal} onClose={hideUpdateModal} />
+      <ConfirmModal
+        visible={showConfirmModal}
+        subtitle={"This action will remove this profile permanently!"}
+        title={"Are You Sure?"}
+        busy={busy}
+        onConfirm={handleOnDeleteConfirm}
+        onCancel={hideConfirmModal}
+      />
+      <UpdateActor
+        visible={showUpdateModal}
+        onClose={hideUpdateModal}
+        initialState={selectedProfile}
+        onSuccess={handleOnActorUpdate}
+      />
     </>
   );
 };
 
-const ActorProfile = ({ profile, OnEditClick }) => {
+const ActorProfile = ({ profile, OnEditClick, onDeleteClick }) => {
   const [showOptions, setShowOptions] = useState(false);
   const acceptedNameLength = 15;
 
@@ -135,7 +242,11 @@ const ActorProfile = ({ profile, OnEditClick }) => {
           </p>
         </div>
 
-        <Options OnEditClick={OnEditClick} visible={showOptions} />
+        <Options
+          OnEditClick={OnEditClick}
+          onDeleteClick={onDeleteClick}
+          visible={showOptions}
+        />
       </div>
     </div>
   );

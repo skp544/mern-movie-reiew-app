@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { commonInputClasses } from "../../utils/theme";
 import { genderOptions } from "../../utils/options";
@@ -16,7 +16,7 @@ const defaultActorInfo = {
   gender: "",
 };
 
-const ActorForm = ({ title, btnTitle, busy, onSubmit }) => {
+const ActorForm = ({ title, btnTitle, busy, onSubmit, initialState }) => {
   // states
   const [actorInfo, setActorInfo] = useState({ ...defaultActorInfo });
   const [selectedAvatarForUI, setSelectedAvatarForUI] = useState("");
@@ -64,6 +64,13 @@ const ActorForm = ({ title, btnTitle, busy, onSubmit }) => {
 
     onSubmit(formData);
   };
+
+  useEffect(() => {
+    if (initialState) {
+      setActorInfo({ ...initialState, avatar: null });
+      setSelectedAvatarForUI(initialState.avatar);
+    }
+  }, [initialState]);
 
   return (
     <form

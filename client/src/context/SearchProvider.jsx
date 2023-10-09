@@ -30,9 +30,12 @@ const SearchProvider = ({ children }) => {
     }
 
     if (!results.length) {
-      setResultNotFound(true);
+      setResults([]);
+      updaterFun && updaterFun([]);
+      return setResultNotFound(true);
     }
 
+    setResultNotFound(false);
     setResults(results);
     updaterFun && updaterFun([...results]);
   };
@@ -46,7 +49,7 @@ const SearchProvider = ({ children }) => {
 
     if (!query.trim()) {
       updaterFun && updaterFun([]);
-      resetSearch();
+      return resetSearch();
     }
 
     debounceFunc(method, query, updaterFun);
@@ -61,7 +64,14 @@ const SearchProvider = ({ children }) => {
 
   return (
     <SearchContext.Provider
-      value={{ handleSearch, searching, resultNotFound, results, resetSearch }}
+      value={{
+        handleSearch,
+        searching,
+        resultNotFound,
+        results,
+        resetSearch,
+        setResultNotFound,
+      }}
     >
       {children}
     </SearchContext.Provider>

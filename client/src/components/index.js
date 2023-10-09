@@ -34,6 +34,10 @@ import AppInfoBox from "./Dashboard/AppInfoBox";
 import LatestUploads from "./Dashboard/LatestUploads";
 import NextAndPrevButton from "./NextAndPrevButton";
 import MovieListItem from "./Dashboard/MovieListItem";
+import UpdateActor from "./Modals/UpdateActor";
+import SearchForm from "./Form/SearchForm";
+import NotFoundText from "./NotFoundText";
+import ConfirmModal from "./Modals/ConfirmModal";
 
 export {
   Navbar,
@@ -72,4 +76,8 @@ export {
   LatestUploads,
   NextAndPrevButton,
   MovieListItem,
+  UpdateActor,
+  SearchForm,
+  NotFoundText,
+  ConfirmModal,
 };

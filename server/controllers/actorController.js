@@ -66,7 +66,7 @@ exports.updateActor = async (req, res) => {
       });
     }
 
-    const public_id = actor.avatar.public_id;
+    const public_id = actor.avatar?.public_id;
 
     // removing image
     if (public_id && file) {
@@ -134,7 +134,7 @@ exports.removeActor = async (req, res) => {
       });
     }
 
-    const public_id = actor.avatar.public_id;
+    const public_id = actor.avatar?.public_id;
 
     // removing image
     if (public_id) {
@@ -152,7 +152,7 @@ exports.removeActor = async (req, res) => {
     await Actor.findByIdAndDelete(actorId);
 
     return res.status(201).json({
-      success: false,
+      success: true,
       message: "Record Deleted Successfully",
     });
   } catch (error) {
@@ -168,10 +168,20 @@ exports.removeActor = async (req, res) => {
 
 exports.searchActor = async (req, res) => {
   try {
-    const { query } = req;
+    const { name } = req.query;
+
+    if (!name.trim()) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid Request!",
+      });
+    }
 
     // searching actor using query
-    const result = await Actor.find({ $text: { $search: `"${query.name}"` } });
+    // const result = await Actor.find({ $text: { $search: `"${query.name}"` } });
+    const result = await Actor.find({
+      name: { $regex: name, $options: "i" },
+    });
 
     // formating result
     const actors = result.map((actor) => formatActor(actor));

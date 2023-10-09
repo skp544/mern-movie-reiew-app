@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BsFillSunFill } from "react-icons/bs";
 import { useTheme } from "../../hooks";
+import SearchForm from "../Form/SearchForm";
 
 const Header = ({ onAddMovieClick, onAddActorClick }) => {
   // state
@@ -23,12 +24,8 @@ const Header = ({ onAddMovieClick, onAddActorClick }) => {
   ];
 
   return (
-    <div className="flex items-center justify-between relative">
-      <input
-        type="text"
-        className=" border-2 dark:border-dark-subtle border-light-subtle dark:border-white focus:border-primary transition-all bg-transparent rounded text-lg py-2 px-4 outline-none dark:text-white"
-        placeholder="Search Movies..."
-      />
+    <div className="flex items-center justify-between relative px-5">
+      <SearchForm placeholder={"Search Movies..."} />
 
       <div className="flex items-center space-x-3">
         <button

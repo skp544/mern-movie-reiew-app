@@ -2,12 +2,11 @@ import toast from "react-hot-toast";
 import { ActorForm, ModalContainer } from "../";
 import { createActor } from "../../api/actor";
 import { useState } from "react";
-import { BiTrendingUp } from "react-icons/bi";
 
 const ActorUpload = ({ visible, onClose }) => {
   const [busy, setBusy] = useState(false);
   const handleSubmit = async (data) => {
-    setBusy(BiTrendingUp);
+    setBusy(true);
     const { success, message } = await createActor(data);
 
     setBusy(false);
