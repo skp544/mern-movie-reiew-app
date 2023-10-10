@@ -12,14 +12,11 @@ const UpdateActor = ({ visible, onClose, initialState, onSuccess }) => {
   //
   const handleSubmit = async (data) => {
     setBusy(true);
-    console.log(initialState.id);
 
     const { success, message, actor } = await updateActor(
       initialState.id,
       data
     );
-
-    console.log(actor);
 
     setBusy(false);
     if (!success) {

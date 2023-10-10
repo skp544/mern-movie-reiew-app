@@ -38,6 +38,7 @@ import UpdateActor from "./Modals/UpdateActor";
 import SearchForm from "./Form/SearchForm";
 import NotFoundText from "./NotFoundText";
 import ConfirmModal from "./Modals/ConfirmModal";
+import UpdateMovie from "./Modals/UpdateMovie";
 
 export {
   Navbar,
@@ -80,4 +81,5 @@ export {
   SearchForm,
   NotFoundText,
   ConfirmModal,
+  UpdateMovie,
 };

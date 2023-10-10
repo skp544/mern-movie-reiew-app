@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+
+// helper
 import { commonInputClasses } from "../../utils/theme";
 import {
   languageOptions,
   statusOptions,
   typeOptions,
 } from "../../utils/options";
+import { validateMovie } from "../../utils/helper";
 
 // components
 import {
@@ -24,7 +27,6 @@ import {
   WriterSelector,
   WritersModal,
 } from "../";
-import { validateMovie } from "../../utils/helper";
 
 const defaultMovieInfo = {
   title: "",
@@ -41,7 +43,7 @@ const defaultMovieInfo = {
   status: "",
 };
 
-const MovieForm = ({ onSubmit, busy }) => {
+const MovieForm = ({ onSubmit, busy, initialState, btnTitle }) => {
   // states
   const [movieInfo, setMovieInfo] = useState({ ...defaultMovieInfo });
   const [showWritersModal, setShowWritersModal] = useState(false);
@@ -60,6 +62,7 @@ const MovieForm = ({ onSubmit, busy }) => {
     type,
     language,
     status,
+    releaseDate,
   } = movieInfo;
 
   // submit function
@@ -209,6 +212,17 @@ const MovieForm = ({ onSubmit, busy }) => {
     setMovieInfo({ ...movieInfo, genres });
   };
 
+  useEffect(() => {
+    if (initialState) {
+      setMovieInfo({
+        ...initialState,
+        releaseDate: initialState.releaseDate.split("T")[0],
+        poster: null,
+      });
+      setSelectedPosterForUI(initialState?.poster);
+    }
+  }, [initialState]);
+
   return (
     <>
       <h1 className="text-center text-2xl mt-2 mb-4 dark:text-white text-primary font-semibold">
@@ -292,11 +306,12 @@ const MovieForm = ({ onSubmit, busy }) => {
               className={`${commonInputClasses} border-2 rounded p-1 w-max`}
               onChange={handleChange}
               name="releaseDate"
+              value={releaseDate}
             />
           </div>
           <Submit
             busy={busy}
-            value={"Upload"}
+            value={btnTitle}
             onClick={handleSubmit}
             type={"button"}
           />

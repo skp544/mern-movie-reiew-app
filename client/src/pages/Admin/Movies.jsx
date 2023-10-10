@@ -1,14 +1,25 @@
 import { useEffect, useState } from "react";
-import { MovieListItem, NextAndPrevButton } from "../../components";
-import { getMovies } from "../../api/movie";
 import toast from "react-hot-toast";
+
+// components
+import {
+  MovieListItem,
+  NextAndPrevButton,
+  UpdateMovie,
+} from "../../components";
+
+// api
+import { geMovieForUpdate, getMovies } from "../../api/movie";
 
 let currentPageNo = 0;
 const limit = 6;
 
 const Movies = () => {
+  // states
   const [movies, setMovies] = useState([]);
   const [reachedToEnd, setReachedToEnd] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState(null);
 
   const fetchMovies = async (pageNo) => {
     const {
@@ -54,21 +65,64 @@ const Movies = () => {
     fetchMovies(currentPageNo);
   };
 
+  const handleOnEditClick = async ({ id }) => {
+    const { success, message, movie } = await geMovieForUpdate(id);
+
+    if (!success) {
+      return toast.error(message);
+    }
+
+    setSelectedMovie(movie);
+
+    setShowUpdateModal(true);
+  };
+  const handleOnDeleteClick = (movie) => {
+    console.log(movie);
+  };
+
+  const handleOnUpdate = (movie) => {
+    const updatedMovie = movies.map((m) => {
+      if (m.id === movie.id) return movie;
+      return m;
+    });
+
+    setMovies([...updatedMovie]);
+  };
+
+  const hideUpdateForm = () => {
+    setShowUpdateModal(false);
+  };
+
   useEffect(() => {
     fetchMovies(currentPageNo);
   }, []);
 
   return (
-    <div className=" space-y-5 p-5">
-      {movies.map((movie) => {
-        return <MovieListItem key={movie.id} movie={movie} />;
-      })}
+    <>
+      <div className=" space-y-5 p-5">
+        {movies.map((movie) => {
+          return (
+            <MovieListItem
+              key={movie.id}
+              movie={movie}
+              onEditClick={() => handleOnEditClick(movie)}
+              onDeleteClick={() => handleOnDeleteClick(movie)}
+            />
+          );
+        })}
 
-      <NextAndPrevButton
-        onNextClick={handleOnNextClick}
-        onPrevClick={handleOnPrevClick}
+        <NextAndPrevButton
+          onNextClick={handleOnNextClick}
+          onPrevClick={handleOnPrevClick}
+        />
+      </div>
+      <UpdateMovie
+        onSuccess={handleOnUpdate}
+        visible={showUpdateModal}
+        initialState={selectedMovie}
+        onClose={hideUpdateForm}
       />
-    </div>
+    </>
   );
 };
 

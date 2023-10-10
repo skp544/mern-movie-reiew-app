@@ -45,7 +45,7 @@ const MovieListItem = ({ movie, onDeleteClick, onEditClick, onOpenClick }) => {
             <div className=" flex item-center space-x-2 text-primary dark:text-white text-lg ">
               <button
                 onClick={onDeleteClick}
-                className="hover:text-red-500 transition-all duration-200"
+                className="hover:text-red-700 transition-all duration-200"
                 type="button"
               >
                 <BsTrash />

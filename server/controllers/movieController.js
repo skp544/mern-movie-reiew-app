@@ -4,7 +4,11 @@ const cloudinary = require("cloudinary").v2;
 const { isValidObjectId } = require("mongoose");
 
 // helper function
-const { uploadTrailerCloud, uploadPosterCloud } = require("../utils/helper");
+const {
+  uploadTrailerCloud,
+  uploadPosterCloud,
+  formatActor,
+} = require("../utils/helper");
 
 exports.uploadTrailer = async (req, res) => {
   try {
@@ -235,9 +239,11 @@ exports.updateWithoutPoster = async (req, res) => {
   }
 };
 
-exports.updateWithPoster = async (req, res) => {
+exports.updateMovie = async (req, res) => {
   try {
     const { movieId } = req.params;
+
+    const file = req.file;
 
     //checking movie id is valid or not
     if (!isValidObjectId(movieId)) {
@@ -247,16 +253,7 @@ exports.updateWithPoster = async (req, res) => {
       });
     }
 
-    // checking if poster file is present or not
-    if (!req.file) {
-      return res.status(401).json({
-        success: false,
-        message: "Movie poster is missing!",
-      });
-    }
-
     const movie = await Movie.findById(movieId);
-
     // checking if movie is present or not
     if (!movie) {
       return res.status(404).json({
@@ -288,7 +285,6 @@ exports.updateWithPoster = async (req, res) => {
     movie.genres = genres;
     movie.tags = tags;
     movie.cast = cast;
-    movie.trailer = trailer;
     movie.language = language;
 
     // saving director if present
@@ -316,53 +312,62 @@ exports.updateWithPoster = async (req, res) => {
       movie.writers = writers;
     }
 
-    // removing poster from cloud
-    const publicId = movie.poster?.public_id;
+    // if poster file is present
+    if (file) {
+      // removing poster from cloud
+      const publicId = movie.poster?.public_id;
 
-    if (publicId) {
-      const { result } = await cloudinary.uploader.destroy(publicId);
+      if (publicId) {
+        const { result } = await cloudinary.uploader.destroy(publicId);
 
-      if (result !== "ok") {
-        return res.status(401).json({
-          success: false,
-          message: "Could not update poster at the moment!",
-        });
+        if (result !== "ok") {
+          return res.status(401).json({
+            success: false,
+            message: "Could not update poster at the moment!",
+          });
+        }
       }
-    }
 
-    // adding new poster
-    const {
-      secure_url: url,
-      public_id,
-      responsive_breakpoints,
-    } = await uploadPosterCloud(req.file);
+      // adding new poster
+      const {
+        secure_url: url,
+        public_id,
+        responsive_breakpoints,
+      } = await uploadPosterCloud(req.file);
 
-    const posterObj = {
-      url,
-      public_id,
-      reponsive: [],
-    };
+      const posterObj = {
+        url,
+        public_id,
+        reponsive: [],
+      };
 
-    // adding movie poster resolution breakpoints
-    const { breakpoints } = responsive_breakpoints[0];
+      // adding movie poster resolution breakpoints
+      const { breakpoints } = responsive_breakpoints[0];
 
-    if (breakpoints.length) {
-      for (let imgObj of breakpoints) {
-        const { secure_url } = imgObj;
-        posterObj.reponsive.push(secure_url);
+      if (breakpoints.length) {
+        for (let imgObj of breakpoints) {
+          const { secure_url } = imgObj;
+          posterObj.reponsive.push(secure_url);
+        }
       }
-    }
 
-    // adding posterObj
-    movie.poster = posterObj;
+      // adding posterObj
+      movie.poster = posterObj;
+    }
 
     // saving poster
     await movie.save();
 
     return res.status(201).json({
       success: true,
-      message: "Movie Updated Successfully with poster",
-      movie,
+      message: "Movie Updated Successfully! ",
+      movie: {
+        id: movie._id,
+        title: movie.title,
+        poster: movie.poster?.url,
+        genres: movie.genres,
+        status: movie.status,
+      },
     });
   } catch (error) {
     console.log("Error in update with poster movie controller");
@@ -483,6 +488,64 @@ exports.getMovies = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Error in Getting Movies!",
+    });
+  }
+};
+
+exports.getMovieForUpdate = async (req, res) => {
+  try {
+    const { movieId } = req.params;
+
+    if (!isValidObjectId(movieId)) {
+      return res.status(401).json({
+        success: false,
+        message: "Id is invalid!",
+      });
+    }
+
+    const movie = await Movie.findById(movieId).populate(
+      "director writers cast.actor"
+    );
+
+    if (!movie) {
+      return res.status(401).json({
+        success: false,
+        message: "Movie Not Found!",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Movie Fetched for update",
+      movie: {
+        id: movie.id,
+        title: movie.title,
+        storyline: movie.storyline,
+        poster: movie.poster?.url,
+        releaseDate: movie.releaseDate,
+        status: movie.status,
+        type: movie.type,
+        language: movie.language,
+        genres: movie.genres,
+        tags: movie.tags,
+        director: formatActor(movie.director),
+        writers: movie.writers?.map((w) => formatActor(w)),
+        cast: movie.cast?.map((c) => {
+          return {
+            id: c.id,
+            profile: formatActor(c.actor),
+            roleAs: c.roleAs,
+            leadActor: c.leadActor,
+          };
+        }),
+      },
+    });
+  } catch (error) {
+    console.log("Error in get movie update  controller");
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Error in Getting Movie for Update!",
     });
   }
 };

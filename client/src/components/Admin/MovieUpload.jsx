@@ -94,7 +94,11 @@ const MovieUpload = ({ visible, onClose }) => {
           OnTypeError={handleTypeError}
         />
       ) : (
-        <MovieForm busy={busy} onSubmit={!busy ? handleSubmit : null} />
+        <MovieForm
+          busy={busy}
+          onSubmit={!busy ? handleSubmit : null}
+          btnTitle={"Upload"}
+        />
       )}
     </ModalContainer>
   );

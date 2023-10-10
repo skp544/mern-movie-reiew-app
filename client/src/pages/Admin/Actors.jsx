@@ -74,7 +74,6 @@ const Actors = () => {
   const handleOnEditClick = (profile) => {
     setShowUpdateModal(true);
     setSelectedProfile(profile);
-    // console.log(profile);
   };
 
   const hideUpdateModal = () => {
