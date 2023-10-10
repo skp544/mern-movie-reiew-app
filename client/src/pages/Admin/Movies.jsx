@@ -3,13 +3,14 @@ import toast from "react-hot-toast";
 
 // components
 import {
+  ConfirmModal,
   MovieListItem,
   NextAndPrevButton,
   UpdateMovie,
 } from "../../components";
 
 // api
-import { geMovieForUpdate, getMovies } from "../../api/movie";
+import { deleteMovie, geMovieForUpdate, getMovies } from "../../api/movie";
 
 let currentPageNo = 0;
 const limit = 6;
@@ -19,6 +20,8 @@ const Movies = () => {
   const [movies, setMovies] = useState([]);
   const [reachedToEnd, setReachedToEnd] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
   const fetchMovies = async (pageNo) => {
@@ -76,8 +79,11 @@ const Movies = () => {
 
     setShowUpdateModal(true);
   };
+
+  // function for deleting movie
   const handleOnDeleteClick = (movie) => {
-    console.log(movie);
+    setShowConfirmModal(true);
+    setSelectedMovie(movie);
   };
 
   const handleOnUpdate = (movie) => {
@@ -91,6 +97,25 @@ const Movies = () => {
 
   const hideUpdateForm = () => {
     setShowUpdateModal(false);
+  };
+
+  const hideConfirmModal = () => {
+    setShowConfirmModal(false);
+  };
+
+  const handleOnDeleteConfirm = async () => {
+    setBusy(true);
+
+    const { success, message } = await deleteMovie(selectedMovie.id);
+
+    setBusy(false);
+
+    if (!success) {
+      return toast.error(message);
+    }
+    toast.success(message);
+    hideConfirmModal();
+    fetchMovies(currentPageNo);
   };
 
   useEffect(() => {
@@ -116,6 +141,14 @@ const Movies = () => {
           onPrevClick={handleOnPrevClick}
         />
       </div>
+      <ConfirmModal
+        visible={showConfirmModal}
+        title={"Are you sure?"}
+        subtitle={"This action will remove this movie permanently"}
+        onConfirm={handleOnDeleteConfirm}
+        onCancel={hideConfirmModal}
+        busy={busy}
+      />
       <UpdateMovie
         onSuccess={handleOnUpdate}
         visible={showUpdateModal}

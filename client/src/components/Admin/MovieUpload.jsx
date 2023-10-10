@@ -66,12 +66,11 @@ const MovieUpload = ({ visible, onClose }) => {
 
     const { success, message } = await uploadMovie(data);
 
+    setBusy(false);
     if (!success) {
-      setBusy(false);
       return toast.error(message);
     }
 
-    setBusy(false);
     toast.success(message);
     onClose();
   };
