@@ -1,8 +1,8 @@
-import { Routes, Route } from "react-router-dom";
-import { Actors, Dashboard, Movies, NotFound } from "../pages";
-import { AdminNavbar, Header, MovieUpload } from "../components";
 import { useState } from "react";
-import ActorUpload from "../components/Modals/ActorUpload";
+import { Routes, Route } from "react-router-dom";
+
+import { Actors, Dashboard, Movies, NotFound, SearchMovies } from "../pages";
+import { AdminNavbar, Header, MovieUpload, ActorUpload } from "../components";
 
 const AdminNavigator = () => {
   const [showMovieUploadModal, setShowMovieUploadModal] = useState(false);
@@ -37,6 +37,7 @@ const AdminNavigator = () => {
             <Route path="/" element={<Dashboard />} />
             <Route path="/movies" element={<Movies />} />
             <Route path="/actors" element={<Actors />} />
+            <Route path="/search" element={<SearchMovies />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>

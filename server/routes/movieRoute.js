@@ -18,6 +18,7 @@ const {
   removeMovie,
   getMovies,
   getMovieForUpdate,
+  searchMovies,
 } = require("../controllers/movieController");
 
 // helper functions
@@ -68,6 +69,7 @@ router.patch(
 router.get("/for-update/:movieId", isAuth, isAdmin, getMovieForUpdate);
 
 router.get("/movies", isAuth, isAdmin, getMovies);
-
 router.delete("/:movieId", isAuth, isAdmin, removeMovie);
+
+router.get("/search", isAuth, isAdmin, searchMovies);
 module.exports = router;

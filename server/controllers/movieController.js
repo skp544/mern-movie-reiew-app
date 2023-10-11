@@ -549,3 +549,41 @@ exports.getMovieForUpdate = async (req, res) => {
     });
   }
 };
+
+exports.searchMovies = async (req, res) => {
+  try {
+    const { title } = req.query;
+
+    if (!title.trim()) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid Request!",
+      });
+    }
+
+    const movies = await Movie.find({
+      title: { $regex: title, $options: "i" },
+    });
+
+    return res.json({
+      success: true,
+      message: "Movie Found!",
+      results: movies.map((m) => {
+        return {
+          id: m._id,
+          title: m.title,
+          poster: m.poster?.url,
+          genres: m.genres,
+          status: m.status,
+        };
+      }),
+    });
+  } catch (error) {
+    console.log("Error in get search movie controller");
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Error in Searching Movie!",
+    });
+  }
+};

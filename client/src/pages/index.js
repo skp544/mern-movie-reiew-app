@@ -8,6 +8,7 @@ import NotFound from "./NotFound";
 import Actors from "./Admin/Actors";
 import Dashboard from "./Admin/Dashboard";
 import Movies from "./Admin/Movies";
+import SearchMovies from "./Admin/SearchMovies";
 
 export {
   Home,
@@ -20,4 +21,5 @@ export {
   Actors,
   Dashboard,
   Movies,
+  SearchMovies,
 };

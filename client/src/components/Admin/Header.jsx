@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { AiOutlinePlus } from "react-icons/ai";
 import { BsFillSunFill } from "react-icons/bs";
+
 import { useTheme } from "../../hooks";
-import SearchForm from "../Form/SearchForm";
+import { SearchForm } from "../";
 
 const Header = ({ onAddMovieClick, onAddActorClick }) => {
   // state
@@ -10,6 +13,7 @@ const Header = ({ onAddMovieClick, onAddActorClick }) => {
 
   // theme toggle hook
   const { toggleTheme } = useTheme();
+  const navigate = useNavigate();
 
   // options
   const options = [
@@ -23,9 +27,20 @@ const Header = ({ onAddMovieClick, onAddActorClick }) => {
     },
   ];
 
+  const handleSearchSubmit = (query) => {
+    if (!query.trim()) {
+      return;
+    }
+
+    navigate(`/search?title=${query}`);
+  };
+
   return (
     <div className="flex items-center justify-between relative px-5">
-      <SearchForm placeholder={"Search Movies..."} />
+      <SearchForm
+        onSubmit={handleSearchSubmit}
+        placeholder={"Search Movies..."}
+      />
 
       <div className="flex items-center space-x-3">
         <button

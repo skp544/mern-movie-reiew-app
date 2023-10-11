@@ -1,78 +1,15 @@
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-
-// api
-import { deleteMovie, geMovieForUpdate, getMovies } from "../../api/movie";
+import { useEffect } from "react";
 
 // components
-import { ConfirmModal, MovieListItem, UpdateMovie } from "../";
-
-const pageNo = 0;
-const limit = 5;
+import { MovieListItem } from "../";
+import { useMovies } from "../../hooks";
 
 const LatestUploads = () => {
-  const [movies, setMovies] = useState([]);
-  const [busy, setBusy] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [selectedMovie, setSelectedMovie] = useState(false);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  // hook
+  const { fetchLatestUploads, latestUploads } = useMovies();
 
-  const fetchLatestUploads = async () => {
-    const { success, message, movies } = await getMovies(pageNo, limit);
-
-    if (!success) {
-      return toast.error(message);
-    }
-
-    setMovies([...movies]);
-  };
-
-  const handleOnDeleteClick = (movie) => {
-    setShowConfirmModal(true);
-    setSelectedMovie(movie);
-  };
-
-  const hideConfirmModal = () => {
-    setShowConfirmModal(false);
-  };
-
-  const handleOnDeleteConfirm = async () => {
-    setBusy(true);
-
-    const { success, message } = await deleteMovie(selectedMovie.id);
-
-    setBusy(false);
-
-    if (!success) {
-      return toast.error(message);
-    }
-    toast.success(message);
-    hideConfirmModal();
+  const handleUIUpdate = () => {
     fetchLatestUploads();
-  };
-
-  const handleOnUpdate = (movie) => {
-    const updatedMovie = movies.map((m) => {
-      if (m.id === movie.id) return movie;
-      return m;
-    });
-
-    setMovies([...updatedMovie]);
-  };
-
-  const hideUpdateForm = () => {
-    setShowUpdateModal(false);
-  };
-
-  const handleOnEditClick = async ({ id }) => {
-    const { success, message, movie } = await geMovieForUpdate(id);
-
-    if (!success) {
-      return toast.error(message);
-    }
-
-    setSelectedMovie(movie);
-    setShowUpdateModal(true);
   };
 
   useEffect(() => {
@@ -87,35 +24,16 @@ const LatestUploads = () => {
         </h2>
 
         <div className=" space-y-3">
-          {movies.map((movie) => (
+          {latestUploads.map((movie) => (
             <MovieListItem
               key={movie.id}
               movie={movie}
-              onDeleteClick={() => {
-                handleOnDeleteClick(movie);
-              }}
-              onEditClick={() => {
-                handleOnEditClick(movie);
-              }}
-              onOpenClick={() => {}}
+              afterDelete={handleUIUpdate}
+              afterUpdate={handleUIUpdate}
             />
           ))}
         </div>
       </div>
-      <ConfirmModal
-        visible={showConfirmModal}
-        title={"Are you sure?"}
-        subtitle={"This action will remove this movie permanently"}
-        onConfirm={handleOnDeleteConfirm}
-        onCancel={hideConfirmModal}
-        busy={busy}
-      />
-      <UpdateMovie
-        onSuccess={handleOnUpdate}
-        visible={showUpdateModal}
-        initialState={selectedMovie}
-        onClose={hideUpdateForm}
-      />
     </>
   );
 };
