@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const cloudinary = require("cloudinary").v2;
+const Review = require("../models/reviewModel");
 
 //rnadom byte function
 exports.generateRandomByte = () => {
@@ -86,4 +87,110 @@ exports.parseData = (req, res, next) => {
     req.body.writers = JSON.parse(writers);
   }
   next();
+};
+
+exports.averageRatingPipeline = (movieId) => {
+  return [
+    {
+      $lookup: {
+        from: "Review",
+        localField: "rating",
+        foreignField: "_id",
+        as: "avgRat",
+      },
+    },
+    {
+      $match: { parentMovie: movieId },
+    },
+    {
+      $group: {
+        _id: null,
+        ratingAvg: {
+          $avg: "$rating",
+        },
+        reviewCount: {
+          $sum: 1,
+        },
+      },
+    },
+  ];
+};
+
+exports.relatedMovieAggregation = (tags, movieId) => {
+  return [
+    {
+      $lookup: {
+        from: "Movie",
+        localField: "tags",
+        foreignField: "_id",
+        as: "relatedMovies",
+      },
+    },
+    {
+      $match: {
+        tags: { $in: [...tags] },
+        _id: { $ne: movieId },
+      },
+    },
+    {
+      $project: {
+        title: 1,
+        poster: "$poster?.url",
+      },
+    },
+    {
+      $limit: 5,
+    },
+  ];
+};
+
+exports.getAvergateRatings = async (movieId) => {
+  const [aggregatedResponse] = await Review.aggregate(
+    this.averageRatingPipeline(movieId)
+  );
+
+  const reviews = {};
+
+  if (aggregatedResponse) {
+    const { ratingAvg, reviewCount } = aggregatedResponse;
+    reviews.ratingAvg = parseFloat(ratingAvg).toFixed(1);
+    reviews.reviewCount = reviewCount;
+  }
+
+  return reviews;
+};
+
+exports.topRatedMoviesPipeline = (type) => {
+  return [
+    {
+      $lookup: {
+        from: "Movie",
+        localField: "reviews",
+        foreignField: "_id",
+        as: "topRated",
+      },
+    },
+    {
+      $match: {
+        reviews: { $exists: true },
+        status: { $eq: "public" },
+        type: { $eq: type },
+      },
+    },
+    {
+      $project: {
+        title: 1,
+        poster: "$poster?.url",
+        reviewCount: { $size: "$reviews" },
+      },
+    },
+    {
+      $sort: {
+        reviewCount: -1,
+      },
+    },
+    {
+      $limit: 5,
+    },
+  ];
 };

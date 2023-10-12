@@ -12,13 +12,16 @@ const {
 // controllers
 const {
   uploadTrailer,
-  updateWithoutPoster,
   createMovie,
   updateMovie,
   removeMovie,
   getMovies,
   getMovieForUpdate,
   searchMovies,
+  getLatestUploads,
+  getSingleMovie,
+  getRelatedMovies,
+  getTopRatedMovies,
 } = require("../controllers/movieController");
 
 // helper functions
@@ -26,7 +29,7 @@ const { parseData } = require("../utils/helper");
 
 const router = express.Router();
 
-// routes
+// admin routes
 router.post(
   "/upload-trailer",
   isAuth,
@@ -47,15 +50,6 @@ router.post(
   createMovie
 );
 
-// router.patch(
-//   "/update-movie-without-poster/:movieId",
-//   isAuth,
-//   isAdmin,
-//   validateMovie,
-//   validate,
-//   updateWithoutPoster
-// );
-
 router.patch(
   "/update/:movieId",
   isAuth,
@@ -72,4 +66,12 @@ router.get("/movies", isAuth, isAdmin, getMovies);
 router.delete("/:movieId", isAuth, isAdmin, removeMovie);
 
 router.get("/search", isAuth, isAdmin, searchMovies);
+
+// public routes
+
+router.get("/latest-uploads", getLatestUploads);
+router.get("/single/:movieId", getSingleMovie);
+router.get("/related/:movieId", getRelatedMovies);
+router.get("/top-rated", getTopRatedMovies);
+
 module.exports = router;

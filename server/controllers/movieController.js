@@ -1,13 +1,21 @@
 // models
 const Movie = require("../models/movieModel");
+const Review = require("../models/reviewModel");
+
+// imports
 const cloudinary = require("cloudinary").v2;
-const { isValidObjectId } = require("mongoose");
+const mongoose = require("mongoose");
+const { isValidObjectId } = mongoose;
 
 // helper function
 const {
   uploadTrailerCloud,
   uploadPosterCloud,
   formatActor,
+  averageRatingPipeline,
+  relatedMovieAggregation,
+  getAvergateRatings,
+  topRatedMoviesPipeline,
 } = require("../utils/helper");
 
 exports.uploadTrailer = async (req, res) => {
@@ -584,6 +592,211 @@ exports.searchMovies = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Error in Searching Movie!",
+    });
+  }
+};
+
+// CONTROLLERS FOR NORMAL USERS
+
+exports.getLatestUploads = async (req, res) => {
+  try {
+    const { limit = 5 } = req.query;
+
+    const results = await Movie.find({ status: "public" })
+      .sort("-createdAt")
+      .limit(parseInt(limit));
+
+    const movies = results.map((m) => {
+      return {
+        id: m._id,
+        title: m.title,
+        poster: m.poster?.url,
+        trailer: m.poster?.url,
+        storyline: m.storyline,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Movies fetched successfully!",
+      movies,
+    });
+  } catch (error) {
+    console.log("Error in get get latest upload movie controller");
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Error in Getting latest upload Movies!",
+    });
+  }
+};
+
+exports.getSingleMovie = async (req, res) => {
+  try {
+    const { movieId } = req.params;
+
+    // mongoose.Types.ObjectId(movieId);
+
+    if (!isValidObjectId(movieId)) {
+      return res.status(401).json({
+        success: false,
+        message: "Movie Id is Invalid!",
+      });
+    }
+
+    const movie = await Movie.findById(movieId).populate(
+      "director writers cast.actor"
+    );
+
+    // const [aggregatedResponse] = await Review.aggregate(
+    //   averageRatingPipeline(movie._id)
+    // );
+
+    // const reviews = {};
+
+    // if (aggregatedResponse) {
+    //   const { ratingAvg, reviewCount } = aggregatedResponse;
+    //   reviews.ratingAvg = parseFloat(ratingAvg).toFixed(1);
+    //   reviews.reviewCount = reviewCount;
+    // }
+
+    const reviews = await getAvergateRatings(movie._id);
+
+    const {
+      _id: id,
+      title,
+      storyline,
+      cast,
+      writers,
+      director,
+      releaseDate,
+      genres,
+      tags,
+      language,
+      poster,
+      trailer,
+      type,
+    } = movie;
+
+    return res.status(200).json({
+      success: true,
+      message: "Movie fetched successfully",
+      movie: {
+        id,
+        title,
+        storyline,
+        releaseDate,
+        genres,
+        tags,
+        language,
+        type,
+        poster: poster?.url,
+        trailer: trailer?.url,
+        cast: cast.map((c) => ({
+          id: c._id,
+          profile: {
+            id: c.actor._id,
+            name: c.actor.name,
+            avatar: c.actor?.avatar?.url,
+          },
+          leadActor: c.leadActor,
+          roleAs: c.roleAs,
+        })),
+        writers: writers.map((w) => ({
+          id: w._id,
+          name: w.name,
+        })),
+        director: {
+          id: director._id,
+          name: director.name,
+        },
+        reviews: { ...reviews },
+      },
+    });
+  } catch (error) {
+    console.log("Error in get get single movie controller");
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Error in Getting  Movie!",
+    });
+  }
+};
+
+exports.getRelatedMovies = async (req, res) => {
+  try {
+    const { movieId } = req.params;
+
+    if (!isValidObjectId(movieId)) {
+      return res.status(401).json({
+        success: false,
+        message: "Movie Id is Invalid!",
+      });
+    }
+
+    const movie = await Movie.findById(movieId);
+
+    const movies = await Movie.aggregate(
+      relatedMovieAggregation(movie.tags, movie._id)
+    );
+
+    const mapMovies = async (m) => {
+      const reviews = await getAvergateRatings(m._id);
+
+      return {
+        id: m._id,
+        title: m.title,
+        poster: m.poster,
+        reviews: { ...reviews },
+      };
+    };
+
+    const relatedMovies = await Promise.all(movies.map(mapMovies));
+
+    return res.status(200).json({
+      success: true,
+      message: "Related Movies fetched successfully",
+      relatedMovies,
+    });
+  } catch (error) {
+    console.log("Error in get related movies controller");
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Error in Getting Related Movie!",
+    });
+  }
+};
+
+exports.getTopRatedMovies = async (req, res) => {
+  try {
+    const { type = "Film" } = req.query;
+
+    const movies = await Movie.aggregate(topRatedMoviesPipeline(type));
+
+    const mapMovies = async (m) => {
+      const reviews = await getAvergateRatings(m._id);
+      return {
+        id: m._id,
+        title: m.title,
+        poster: m.poster,
+        reviews: { ...reviews },
+      };
+    };
+
+    const topRatedMovies = await Promise.all(movies.map(mapMovies));
+
+    return res.status(200).json({
+      success: true,
+      message: "Top Rated movies fetched successfully!",
+      topRatedMovies,
+    });
+  } catch (error) {
+    console.log("Error in  get top rated movies controller");
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Error in Getting Top Rated Movies!",
     });
   }
 };
