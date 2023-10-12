@@ -7,6 +7,7 @@ require("dotenv").config();
 const userRoute = require("./routes/userRoute");
 const actorRoute = require("./routes/actorRoute");
 const movieRoute = require("./routes/movieRoute");
+const reviewRoute = require("./routes/reviewRoute");
 
 // functions
 const connectDB = require("./config/database");
@@ -24,6 +25,7 @@ app.use(cors());
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/actor", actorRoute);
 app.use("/api/v1/movie", movieRoute);
+app.use("/api/v1/review", reviewRoute);
 app.use("/*", handleNotFound);
 
 // functions
