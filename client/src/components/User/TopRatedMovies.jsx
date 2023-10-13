@@ -20,7 +20,9 @@ const TopRatedMovies = () => {
     fetchMovies();
   }, []);
 
-  return <MovieList movies={movies} title={"Viewers Choice (Movies)"} />;
+  return (
+    <MovieList movies={movies} title={"Viewers Choice (Movies)"} className="" />
+  );
 };
 
 export default TopRatedMovies;

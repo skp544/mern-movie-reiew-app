@@ -128,3 +128,14 @@ export const trimTitle = (text = "") => {
 
   return text.substring(0, 20) + "...";
 };
+
+export const convertDate = (date = "") => {
+  return date.split("T")[0];
+};
+
+export const convertReviewCount = (count) => {
+  if (count <= 999) {
+    return count;
+  }
+  return parseFloat(count / 1000).toFixed(1) + "k";
+};

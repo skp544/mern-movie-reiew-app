@@ -1,7 +1,9 @@
 import {
   Container,
+  HeroSlideShow,
   NotVerified,
   TopRatedMovies,
+  TopRatedTVSeries,
   TopRatedWebSeries,
 } from "../components";
 
@@ -11,9 +13,13 @@ const Home = () => {
       <Container>
         <NotVerified />
         {/* slider */}
+        <HeroSlideShow />
         {/* most rated movies */}
-        <TopRatedMovies />
-        <TopRatedWebSeries />
+        <div className=" space-y-3 py-8">
+          <TopRatedMovies />
+          <TopRatedWebSeries />
+          <TopRatedTVSeries />
+        </div>
       </Container>
     </div>
   );

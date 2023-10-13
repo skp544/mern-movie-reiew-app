@@ -134,3 +134,30 @@ export const getTopRatedMovies = async (type) => {
     return catchError(error);
   }
 };
+
+export const getLatestUploads = async () => {
+  try {
+    const { data } = await client(`/movie/latest-uploads`);
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};
+
+export const getSingleMovie = async (id) => {
+  try {
+    const { data } = await client(`/movie/single/${id}`);
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};
+
+export const getRelatedMovies = async (id) => {
+  try {
+    const { data } = await client(`/movie/related/${id}`);
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};

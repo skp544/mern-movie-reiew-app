@@ -44,6 +44,9 @@ import GridContainer from "./GridContainer";
 import MovieList from "./User/MovieList";
 import TopRatedWebSeries from "./User/TopRatedWebSeries";
 import TopRatedTVSeries from "./User/TopRatedTVSeries";
+import HeroSlideShow from "./User/HeroSlideShow";
+import RatingStar from "./User/RatingStar";
+import RelatedMovies from "./User/RelatedMovies";
 
 export {
   Navbar,
@@ -92,4 +95,7 @@ export {
   MovieList,
   TopRatedWebSeries,
   TopRatedTVSeries,
+  HeroSlideShow,
+  RatingStar,
+  RelatedMovies,
 };
