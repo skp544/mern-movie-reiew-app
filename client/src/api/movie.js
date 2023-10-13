@@ -1,6 +1,7 @@
 import { catchError, getToken } from "../utils/helper";
 import client from "./client";
 
+// api fetching for admin
 export const uploadTrailer = async (formData, onUploadProgress) => {
   const token = getToken();
   try {
@@ -112,6 +113,22 @@ export const searchMovieForAdmin = async (title) => {
       },
     });
 
+    return data;
+  } catch (error) {
+    return catchError(error);
+  }
+};
+
+// api fetching for normal users
+
+export const getTopRatedMovies = async (type) => {
+  try {
+    let endpoint = `/movie/top-rated`;
+    if (type) {
+      endpoint = endpoint + `?type=${type}`;
+    }
+
+    const { data } = await client(endpoint);
     return data;
   } catch (error) {
     return catchError(error);

@@ -9,6 +9,7 @@ import Actors from "./Admin/Actors";
 import Dashboard from "./Admin/Dashboard";
 import Movies from "./Admin/Movies";
 import SearchMovies from "./Admin/SearchMovies";
+import SingleMovie from "./SingleMovie";
 
 export {
   Home,
@@ -22,4 +23,5 @@ export {
   Dashboard,
   Movies,
   SearchMovies,
+  SingleMovie,
 };

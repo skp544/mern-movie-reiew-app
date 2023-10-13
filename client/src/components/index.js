@@ -39,6 +39,11 @@ import SearchForm from "./Form/SearchForm";
 import NotFoundText from "./NotFoundText";
 import ConfirmModal from "./Modals/ConfirmModal";
 import UpdateMovie from "./Modals/UpdateMovie";
+import TopRatedMovies from "./User/TopRatedMovies";
+import GridContainer from "./GridContainer";
+import MovieList from "./User/MovieList";
+import TopRatedWebSeries from "./User/TopRatedWebSeries";
+import TopRatedTVSeries from "./User/TopRatedTVSeries";
 
 export {
   Navbar,
@@ -82,4 +87,9 @@ export {
   NotFoundText,
   ConfirmModal,
   UpdateMovie,
+  TopRatedMovies,
+  GridContainer,
+  MovieList,
+  TopRatedWebSeries,
+  TopRatedTVSeries,
 };

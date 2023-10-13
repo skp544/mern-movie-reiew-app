@@ -135,7 +135,7 @@ exports.relatedMovieAggregation = (tags, movieId) => {
     {
       $project: {
         title: 1,
-        poster: "$poster?.url",
+        poster: "$poster.url",
       },
     },
     {
@@ -180,7 +180,7 @@ exports.topRatedMoviesPipeline = (type) => {
     {
       $project: {
         title: 1,
-        poster: "$poster?.url",
+        poster: "$poster.url",
         reviewCount: { $size: "$reviews" },
       },
     },

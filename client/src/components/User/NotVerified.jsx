@@ -13,7 +13,7 @@ const NotVerified = () => {
     navigate("/auth/verification", { state: { user: authInfo?.profile } });
   };
   return (
-    <Container>
+    <div>
       {isLoggedIn && !isVerified ? (
         <p className=" text-lg text-center bg-blue-50 p-2 ">
           It looks like you haven&apos;t verified your account,{" "}
@@ -27,7 +27,7 @@ const NotVerified = () => {
       ) : (
         <></>
       )}
-    </Container>
+    </div>
   );
 };
 
