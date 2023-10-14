@@ -44,7 +44,7 @@ const RatingForm = ({ busy, onSubmit }) => {
           value={content}
           onChange={handleOnChange}
           className="w-full h-24 border-2 p-2 dark:text-white text-primary rounded outline-none bg-transparent resize-none custom-scroll-bar"
-        ></textarea>
+        />
 
         <Submit busy={busy} onClick={handleSubmit} value="Rate This Movie" />
       </div>

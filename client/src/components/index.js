@@ -49,6 +49,7 @@ import RatingStar from "./User/RatingStar";
 import RelatedMovies from "./User/RelatedMovies";
 import AddRatingModal from "./Modals/AddRatingModal";
 import RatingForm from "./Form/RatingForm";
+import CustomBtnLink from "./CustomBtnLink";
 
 export {
   Navbar,
@@ -102,4 +103,5 @@ export {
   RelatedMovies,
   AddRatingModal,
   RatingForm,
+  CustomBtnLink,
 };

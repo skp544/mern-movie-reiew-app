@@ -483,6 +483,7 @@ exports.getMovies = async (req, res) => {
       poster: movie?.poster?.url,
       genres: movie.genres,
       status: movie.status,
+      responsivePosters: movie?.poster?.reponsive,
     }));
 
     return res.status(201).json({
@@ -611,6 +612,7 @@ exports.getLatestUploads = async (req, res) => {
         id: m._id,
         title: m.title,
         poster: m.poster?.url,
+        responsivePosters: m.poster.reponsive,
         trailer: m.poster?.url,
         storyline: m.storyline,
       };
@@ -647,18 +649,6 @@ exports.getSingleMovie = async (req, res) => {
     const movie = await Movie.findById(movieId).populate(
       "director writers cast.actor"
     );
-
-    // const [aggregatedResponse] = await Review.aggregate(
-    //   averageRatingPipeline(movie._id)
-    // );
-
-    // const reviews = {};
-
-    // if (aggregatedResponse) {
-    //   const { ratingAvg, reviewCount } = aggregatedResponse;
-    //   reviews.ratingAvg = parseFloat(ratingAvg).toFixed(1);
-    //   reviews.reviewCount = reviewCount;
-    // }
 
     const reviews = await getAverageRatings(movie._id);
 
@@ -747,6 +737,7 @@ exports.getRelatedMovies = async (req, res) => {
         id: m._id,
         title: m.title,
         poster: m.poster,
+        responsivePosters: m.responsivePosters,
         reviews: { ...reviews },
       };
     };
@@ -780,6 +771,7 @@ exports.getTopRatedMovies = async (req, res) => {
         id: m._id,
         title: m.title,
         poster: m.poster,
+        responsivePosters: m.responsivePosters,
         reviews: { ...reviews },
       };
     };

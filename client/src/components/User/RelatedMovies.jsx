@@ -23,7 +23,7 @@ const RelatedMovies = ({ movieId }) => {
 
   return (
     <MovieList
-      title={"Related Movies:"}
+      title={"Related Movies/Series:"}
       movies={movies}
       className="text-left text-light-subtle dark:text-dark-subtle "
     />

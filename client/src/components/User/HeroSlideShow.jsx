@@ -190,7 +190,7 @@ const Slide = forwardRef((props, ref) => {
         <img className="aspect-video object-cover -z-10" src={src} alt="" />
       ) : null}
       {title ? (
-        <div className="absolute inset-0 flex flex-col justify-end py-3 bg-gradient-to-t from-white dark:from-primary">
+        <div className="absolute inset-0 flex flex-col justify-end py-3 bg-gradient-to-t from-white via-transparent dark:via-transparent dark:from-primary">
           <h1 className="font-semibold text-4xl dark:text-highlight-dark text-highlight">
             {title}
           </h1>

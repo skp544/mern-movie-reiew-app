@@ -15,6 +15,12 @@ const MovieUpload = ({ visible, onClose }) => {
   const [videoInfo, setVideoInfo] = useState({});
   const [busy, setBusy] = useState(false);
 
+  const resetState = () => {
+    setVideoSelected(false);
+    setVideoUploaded(false);
+    setUploadProgress(0);
+    setVideoInfo({});
+  };
   // handling trailer upload
   const handleUploadTrailer = async (formData) => {
     const { success, message, response } = await uploadTrailer(
@@ -72,6 +78,7 @@ const MovieUpload = ({ visible, onClose }) => {
     }
 
     toast.success(message);
+    resetState();
     onClose();
   };
 

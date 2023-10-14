@@ -139,3 +139,18 @@ export const convertReviewCount = (count = 0) => {
   }
   return parseFloat(count / 1000).toFixed(1) + "k";
 };
+
+export const getPoster = (posters = []) => {
+  const { length } = posters;
+
+  if (!length) {
+    return null;
+  }
+
+  // has more than two poster
+  if (length > 2) {
+    return posters[1];
+  }
+
+  return posters[0];
+};

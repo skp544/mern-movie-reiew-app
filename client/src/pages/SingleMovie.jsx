@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import {
   AddRatingModal,
   Container,
+  CustomBtnLink,
   RatingStar,
   RelatedMovies,
 } from "../components";
@@ -86,159 +87,87 @@ const SingleMovie = () => {
 
   return (
     <div className="dark:bg-primary bg-white min-h-screen pb-10">
-      <Container>
+      <Container className={" xl:px-0 px-4"}>
         {/* trailer */}
         <video poster={poster} controls src={trailer} />
 
         {/* title  */}
         <div className=" flex justify-between items-center">
-          <h2 className=" text-4xl text-highlight dark:text-highlight-dark py-3">
+          <h2 className=" xl:text-4xl lg:text-3xl text-2xl text-highlight dark:text-highlight-dark py-3">
             {title}
           </h2>
           <div className=" flex flex-col justify-center items-end">
             <RatingStar rating={reviews?.ratingAvg} />
 
-            <Link
-              className="text-highlight dark:text-highlight-dark  hover:underline"
-              to={`/movie/reviews/${id}`}
-            >
-              {convertReviewCount(reviews?.reviewCount)} Reviews
-            </Link>
-            <button
-              className="text-highlight dark:text-highlight-dark hover:underline "
-              type="button"
+            <CustomBtnLink
+              label={`${convertReviewCount(reviews?.reviewCount)} Reviews`}
+              onClick={() => navigate(`/movie/reviews/${id}`)}
+            />
+            <CustomBtnLink
               onClick={handleOnRateMovie}
-            >
-              Rate The Movie
-            </button>
+              label={"Rate The Movie"}
+            />
           </div>
         </div>
 
-        {/* storyline  */}
         <div className=" space-y-3">
-          <p className=" text-light-subtle dark:text-dark-subtle text-lg">
+          {/* storyline  */}
+          <p className=" text-light-subtle dark:text-dark-subtle sm:text-lg text-base">
             {storyline}
           </p>
           {/* director */}
-          <div className=" flex gap-2 text-lg">
-            <p className="text-light-subtle dark:text-dark-subtle font-semibold">
-              Director:
-            </p>
-            <p className="text-highlight dark:text-highlight-dark hover:underline cursor-pointer">
-              {director?.name}
-            </p>
-          </div>
+          <ListWithLabel label={"Director:"}>
+            <CustomBtnLink label={director?.name} />
+          </ListWithLabel>
 
           {/* writer */}
-          <div className=" flex gap-2 text-lg">
-            <p className="text-light-subtle dark:text-dark-subtle font-semibold">
-              Writers:
-            </p>
+          <ListWithLabel label={" Writers:"}>
             <div className="flex gap-2">
               {writers.map((w, i) => (
-                <p
-                  className="text-highlight dark:text-highlight-dark hover:underline cursor-pointer"
-                  key={i}
-                >
-                  {w.name}
-                </p>
+                <CustomBtnLink label={w?.name} key={i} />
               ))}
             </div>
-          </div>
+          </ListWithLabel>
 
           {/* cast */}
-          <div className=" flex gap-2 text-lg">
-            <p className="text-light-subtle dark:text-dark-subtle font-semibold">
-              Cast:
-            </p>
+          <ListWithLabel label={" Cast:"}>
             <div className="flex gap-2">
               {cast.map(
                 (c, i) =>
                   c.leadActor && (
-                    <p
-                      className="text-highlight dark:text-highlight-dark hover:underline cursor-pointer"
-                      key={i}
-                    >
-                      {c.profile.name}
-                    </p>
+                    <CustomBtnLink label={c.profile.name} key={i} />
                   )
               )}
             </div>
-          </div>
+          </ListWithLabel>
 
           {/* language */}
-          <div className=" flex gap-2 text-lg">
-            <p className="text-light-subtle dark:text-dark-subtle font-semibold">
-              Language:
-            </p>
-            <p className="text-highlight dark:text-highlight-dark  ">
-              {language}
-            </p>
-          </div>
+          <ListWithLabel label={"Language:"}>
+            <CustomBtnLink label={language} clickable={false} />
+          </ListWithLabel>
 
           {/* release date */}
-          <div className=" flex gap-2 text-lg">
-            <p className="text-light-subtle dark:text-dark-subtle font-semibold">
-              Release Date:
-            </p>
-            <p className="text-highlight dark:text-highlight-dark  ">
-              {convertDate(releaseDate)}
-            </p>
-          </div>
+          <ListWithLabel label={"Release Date:"}>
+            <CustomBtnLink label={convertDate(releaseDate)} clickable={false} />
+          </ListWithLabel>
 
           {/* genres */}
-          <div className=" flex gap-2 text-lg">
-            <p className="text-light-subtle dark:text-dark-subtle font-semibold">
-              Genres:
-            </p>
+          <ListWithLabel label={"Genres:"}>
             <div className="flex gap-2">
               {genres.map((g, i) => (
-                <p className="text-highlight dark:text-highlight-dark " key={i}>
-                  {g}
-                </p>
+                <CustomBtnLink label={g} key={i} clickable={false} />
               ))}
             </div>
-          </div>
+          </ListWithLabel>
 
           {/* type */}
-          <div className=" flex gap-2 text-lg">
-            <p className="text-light-subtle dark:text-dark-subtle font-semibold">
-              Type:
-            </p>
-            <p className="text-highlight dark:text-highlight-dark  ">{type}</p>
-          </div>
+          <ListWithLabel label={"Type:"}>
+            <CustomBtnLink label={type} clickable={false} />
+          </ListWithLabel>
         </div>
 
         {/* all members */}
-        <div className="mt-5">
-          <h2 className="text-light-subtle dark:text-dark-subtle font-semibold mb-2  text-2xl">
-            Cast & Crew:
-          </h2>
-          <div className="grid grid-cols-8  gap-5 place-items-center">
-            {cast.map((c, i) => {
-              return (
-                <div key={i} className=" flex flex-col items-center">
-                  <img
-                    src={c.profile?.avatar}
-                    alt=""
-                    className=" aspect-square w-24 h-24 rounded-full object-cover mb-2"
-                  />
-                  <div className="text-center ">
-                    <p className=" whitespace-nowrap text-highlight dark:text-highlight-dark hover:underline cursor-pointer">
-                      {c.profile.name}
-                    </p>
-                    <span className=" text-light-subtle dark:text-dark-subtle">
-                      as
-                    </span>
-                    <p className=" whitespace-nowrap text-highlight dark:text-highlight-dark ">
-                      {c.roleAs}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        <CastProfiles cast={cast} />
 
         {/* related movies */}
         <RelatedMovies movieId={id} />
@@ -249,6 +178,49 @@ const SingleMovie = () => {
         onClose={hideRatingModal}
         onSuccess={handleOnRatingSuccess}
       />
+    </div>
+  );
+};
+
+const ListWithLabel = ({ children, label }) => {
+  return (
+    <div className=" flex gap-2 sm:text-lg text-base">
+      <p className="text-light-subtle dark:text-dark-subtle font-semibold">
+        {label}
+      </p>
+      {children}
+    </div>
+  );
+};
+
+const CastProfiles = ({ cast }) => {
+  return (
+    <div className="mt-5">
+      <h2 className="text-light-subtle dark:text-dark-subtle font-semibold mb-2  md:text-2xl sm:text-xl">
+        Cast & Crew:
+      </h2>
+      <div className=" flex items-center flex-wrap  gap-5 ">
+        {cast.map((c, i) => {
+          return (
+            <div key={i} className="basis-28 flex flex-col items-center mb-4">
+              <img
+                src={c.profile?.avatar}
+                alt=""
+                className=" aspect-square w-24 h-24 rounded-full object-cover mb-2"
+              />
+
+              {/* name and role of actors */}
+              <div className="text-center flex flex-col">
+                <CustomBtnLink label={c.profile.name} />
+                <span className=" text-light-subtle dark:text-dark-subtle">
+                  as
+                </span>
+                <CustomBtnLink label={c.roleAs} clickable={false} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

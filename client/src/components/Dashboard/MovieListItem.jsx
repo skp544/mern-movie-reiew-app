@@ -3,6 +3,7 @@ import { ConfirmModal, UpdateMovie } from "../";
 import { useState } from "react";
 import { deleteMovie } from "../../api/movie";
 import toast from "react-hot-toast";
+import { getPoster } from "../../utils/helper";
 
 const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -72,7 +73,7 @@ const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
 };
 
 const MovieCard = ({ movie, onDeleteClick, onEditClick, onOpenClick }) => {
-  const { poster = "", title, genres = [], status } = movie;
+  const { poster = "", title, genres = [], status, responsivePosters } = movie;
 
   return (
     <table className=" w-full border-b   ">
@@ -82,7 +83,7 @@ const MovieCard = ({ movie, onDeleteClick, onEditClick, onOpenClick }) => {
             <div className=" w-24">
               <img
                 className=" rounded-t-md w-full object-cover aspect-video"
-                src={poster}
+                src={getPoster(responsivePosters || poster)}
                 alt={title}
               />
             </div>

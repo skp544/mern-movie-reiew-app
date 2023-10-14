@@ -18,6 +18,7 @@ const TopRatedMovies = () => {
 
   useEffect(() => {
     fetchMovies();
+    return () => {};
   }, []);
 
   return (
