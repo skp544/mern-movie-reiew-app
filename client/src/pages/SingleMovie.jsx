@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import { Container, RatingStar, RelatedMovies } from "../components";
+import {
+  AddRatingModal,
+  Container,
+  RatingStar,
+  RelatedMovies,
+} from "../components";
 
 import { getSingleMovie } from "../api/movie";
 import { convertDate, convertReviewCount } from "../utils/helper";
@@ -11,11 +16,14 @@ import { useAuth } from "../hooks";
 const SingleMovie = () => {
   const [movie, setMovie] = useState({});
   const [ready, setReady] = useState(false);
+  const [showRatingModal, setShowRatingModal] = useState(false);
 
   const { movieId } = useParams();
   const navigate = useNavigate();
 
-  const { isLoggedIn } = useAuth();
+  const { authInfo } = useAuth();
+
+  const { isLoggedIn } = authInfo;
 
   const fetchMovie = async () => {
     const { success, messgae, movie } = await getSingleMovie(movieId);
@@ -32,6 +40,16 @@ const SingleMovie = () => {
       toast.error("You are not logged in!");
       return navigate("/auth/sign-in");
     }
+
+    setShowRatingModal(true);
+  };
+
+  const hideRatingModal = () => {
+    setShowRatingModal(false);
+  };
+
+  const handleOnRatingSuccess = (reviews) => {
+    setMovie({ ...movie, reviews: { ...reviews } });
   };
 
   useEffect(() => {
@@ -79,11 +97,12 @@ const SingleMovie = () => {
           </h2>
           <div className=" flex flex-col justify-center items-end">
             <RatingStar rating={reviews?.ratingAvg} />
+
             <Link
               className="text-highlight dark:text-highlight-dark  hover:underline"
               to={`/movie/reviews/${id}`}
             >
-              {convertReviewCount(reviews.reviewCount)} Reviews
+              {convertReviewCount(reviews?.reviewCount)} Reviews
             </Link>
             <button
               className="text-highlight dark:text-highlight-dark hover:underline "
@@ -224,6 +243,12 @@ const SingleMovie = () => {
         {/* related movies */}
         <RelatedMovies movieId={id} />
       </Container>
+
+      <AddRatingModal
+        visible={showRatingModal}
+        onClose={hideRatingModal}
+        onSuccess={handleOnRatingSuccess}
+      />
     </div>
   );
 };

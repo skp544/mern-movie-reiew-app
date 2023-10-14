@@ -144,7 +144,7 @@ exports.relatedMovieAggregation = (tags, movieId) => {
   ];
 };
 
-exports.getAvergateRatings = async (movieId) => {
+exports.getAverageRatings = async (movieId) => {
   const [aggregatedResponse] = await Review.aggregate(
     this.averageRatingPipeline(movieId)
   );

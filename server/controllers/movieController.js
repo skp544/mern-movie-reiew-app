@@ -14,7 +14,7 @@ const {
   formatActor,
   averageRatingPipeline,
   relatedMovieAggregation,
-  getAvergateRatings,
+  getAverageRatings,
   topRatedMoviesPipeline,
 } = require("../utils/helper");
 
@@ -660,7 +660,7 @@ exports.getSingleMovie = async (req, res) => {
     //   reviews.reviewCount = reviewCount;
     // }
 
-    const reviews = await getAvergateRatings(movie._id);
+    const reviews = await getAverageRatings(movie._id);
 
     const {
       _id: id,
@@ -741,7 +741,7 @@ exports.getRelatedMovies = async (req, res) => {
     );
 
     const mapMovies = async (m) => {
-      const reviews = await getAvergateRatings(m._id);
+      const reviews = await getAverageRatings(m._id);
 
       return {
         id: m._id,
@@ -775,7 +775,7 @@ exports.getTopRatedMovies = async (req, res) => {
     const movies = await Movie.aggregate(topRatedMoviesPipeline(type));
 
     const mapMovies = async (m) => {
-      const reviews = await getAvergateRatings(m._id);
+      const reviews = await getAverageRatings(m._id);
       return {
         id: m._id,
         title: m.title,

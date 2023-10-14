@@ -1,6 +1,7 @@
 const { isValidObjectId } = require("mongoose");
 const Movie = require("../models/movieModel");
 const Review = require("../models/reviewModel");
+const { getAverageRatings } = require("../utils/helper");
 
 exports.addReview = async (req, res) => {
   try {
@@ -54,9 +55,12 @@ exports.addReview = async (req, res) => {
     await movie.save();
     await newReview.save();
 
+    const reviews = await getAverageRatings(movie._id);
+
     return res.status(200).json({
       success: true,
       message: "Review is posted!",
+      reviews,
     });
   } catch (error) {
     console.log("Error in add review controller");

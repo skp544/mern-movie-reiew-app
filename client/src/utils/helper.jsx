@@ -133,7 +133,7 @@ export const convertDate = (date = "") => {
   return date.split("T")[0];
 };
 
-export const convertReviewCount = (count) => {
+export const convertReviewCount = (count = 0) => {
   if (count <= 999) {
     return count;
   }

@@ -47,6 +47,8 @@ import TopRatedTVSeries from "./User/TopRatedTVSeries";
 import HeroSlideShow from "./User/HeroSlideShow";
 import RatingStar from "./User/RatingStar";
 import RelatedMovies from "./User/RelatedMovies";
+import AddRatingModal from "./Modals/AddRatingModal";
+import RatingForm from "./Form/RatingForm";
 
 export {
   Navbar,
@@ -98,4 +100,6 @@ export {
   HeroSlideShow,
   RatingStar,
   RelatedMovies,
+  AddRatingModal,
+  RatingForm,
 };
