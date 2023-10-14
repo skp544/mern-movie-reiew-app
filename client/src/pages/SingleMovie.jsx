@@ -13,11 +13,14 @@ import {
 import { getSingleMovie } from "../api/movie";
 import { convertDate, convertReviewCount } from "../utils/helper";
 import { useAuth } from "../hooks";
+import ProfileModal from "../components/Modals/ProfileModal";
 
 const SingleMovie = () => {
   const [movie, setMovie] = useState({});
   const [ready, setReady] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [selectedProfle, setSelectedProfle] = useState({});
 
   const { movieId } = useParams();
   const navigate = useNavigate();
@@ -51,6 +54,16 @@ const SingleMovie = () => {
 
   const handleOnRatingSuccess = (reviews) => {
     setMovie({ ...movie, reviews: { ...reviews } });
+  };
+
+  const hideProfileModal = () => {
+    // setSelectedProfle({});
+    setShowProfileModal(false);
+  };
+
+  const handleProfileClick = (profile) => {
+    setSelectedProfle(profile);
+    setShowProfileModal(true);
   };
 
   useEffect(() => {
@@ -117,7 +130,10 @@ const SingleMovie = () => {
           </p>
           {/* director */}
           <ListWithLabel label={"Director:"}>
-            <CustomBtnLink label={director?.name} />
+            <CustomBtnLink
+              label={director?.name}
+              onClick={() => handleProfileClick(director)}
+            />
           </ListWithLabel>
 
           {/* writer */}
@@ -173,6 +189,11 @@ const SingleMovie = () => {
         <RelatedMovies movieId={id} />
       </Container>
 
+      <ProfileModal
+        visible={showProfileModal}
+        onClose={hideProfileModal}
+        profileId={selectedProfle.id}
+      />
       <AddRatingModal
         visible={showRatingModal}
         onClose={hideRatingModal}
@@ -199,16 +220,17 @@ const CastProfiles = ({ cast }) => {
       <h2 className="text-light-subtle dark:text-dark-subtle font-semibold mb-2  md:text-2xl sm:text-xl">
         Cast & Crew:
       </h2>
-      <div className=" flex items-center flex-wrap  gap-5 ">
+      <div className=" flex items-center flex-wrap  gap-8 ">
         {cast.map((c, i) => {
           return (
             <div key={i} className="basis-28 flex flex-col items-center mb-4">
-              <img
-                src={c.profile?.avatar}
-                alt=""
-                className=" aspect-square w-24 h-24 rounded-full object-cover mb-2"
-              />
-
+              <div className=" aspect-square w-24 h-24 rounded-full overflow-hidden ">
+                <img
+                  src={c.profile?.avatar}
+                  alt=""
+                  className="w-full h-full rounded-full object-cover mb-2 hover-image"
+                />
+              </div>
               {/* name and role of actors */}
               <div className="text-center flex flex-col">
                 <CustomBtnLink label={c.profile.name} />

@@ -80,9 +80,9 @@ const MovieCard = ({ movie, onDeleteClick, onEditClick, onOpenClick }) => {
       <tbody>
         <tr className=" mb-2">
           <td>
-            <div className=" w-24">
+            <div className=" w-24 rounded-t-md aspect-video overflow-hidden ">
               <img
-                className=" rounded-t-md w-full object-cover aspect-video"
+                className=" w-full object-cover hover-image"
                 src={getPoster(responsivePosters || poster)}
                 alt={title}
               />

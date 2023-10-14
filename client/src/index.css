@@ -69,6 +69,10 @@
   animation: scale 0.2s reverse forwards;
 }
 
+.hover-image {
+  @apply transition-all duration-200 hover:scale-110;
+}
+
 @keyframes scale {
   0% {
     transform: scaleY(0);

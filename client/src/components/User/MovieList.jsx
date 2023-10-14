@@ -27,11 +27,13 @@ const ListItem = ({ movie }) => {
   const { title, reviews, id, poster, reponsiviePosters } = movie;
   return (
     <Link to={`/movie/${id}`}>
-      <img
-        src={getPoster(reponsiviePosters) || poster}
-        alt={title}
-        className=" aspect-video object-cover"
-      />
+      <div className="aspect-video overflow-hidden">
+        <img
+          src={getPoster(reponsiviePosters) || poster}
+          alt={title}
+          className="w-full h-full object-cover hover-image"
+        />
+      </div>
       <h2
         className=" text-lg dark:text-white text-secondary font-semibold mt-2 ml-3"
         title={title}

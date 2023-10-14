@@ -5,7 +5,7 @@ const CustomBtnLink = ({ label, clickable = true, onClick }) => {
     <button
       onClick={onClick}
       type="button"
-      className={`${classes} text-highlight dark:text-highlight-dark `}
+      className={`${classes} text-highlight dark:text-highlight-dark whitespace-nowrap `}
     >
       {label}
     </button>
