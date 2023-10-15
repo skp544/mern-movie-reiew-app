@@ -50,6 +50,8 @@ import RelatedMovies from "./User/RelatedMovies";
 import AddRatingModal from "./Modals/AddRatingModal";
 import RatingForm from "./Form/RatingForm";
 import CustomBtnLink from "./CustomBtnLink";
+import EditRatingModal from "./Modals/EditRatingModal";
+import MostRatedMovies from "./MostRatedMovies";
 
 export {
   Navbar,
@@ -104,4 +106,6 @@ export {
   AddRatingModal,
   RatingForm,
   CustomBtnLink,
+  EditRatingModal,
+  MostRatedMovies,
 };

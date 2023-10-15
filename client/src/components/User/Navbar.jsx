@@ -2,6 +2,7 @@ import { BsFillSunFill } from "react-icons/bs";
 import Container from "../Container";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth, useTheme } from "../../hooks";
+import SearchForm from "../Form/SearchForm";
 
 const Navbar = () => {
   const { toggleTheme } = useTheme();
@@ -12,14 +13,18 @@ const Navbar = () => {
 
   const navigate = useNavigate();
 
+  const handleSearchSubmit = (query) => {
+    navigate(`/movie/search?title=${query}`);
+  };
+
   return (
-    <div className=" bg-secondary shadow-sm s shadow-gray-500">
+    <div className=" bg-secondary shadow-md z-10 w-full shadow-gray-500 fixed top-0">
       <Container className="p-3">
         <div className="flex justify-between items-center">
           <Link to={"/"}>
-            <img src="/logo.png" alt="logo" className=" h-10" />
+            <img src="/logo.png" alt="logo" className=" sm:h-10 h-8" />
           </Link>
-          <ul className="flex items-center space-x-6">
+          <ul className="flex items-center sm:space-x-6 space-x-2">
             <li>
               <button
                 onClick={toggleTheme}
@@ -29,18 +34,18 @@ const Navbar = () => {
               </button>
             </li>
             <li>
-              <input
-                type="text"
-                className="border-2 border-dark-subtle px-4 py-1 bg-transparent text-xl rounded outline-none focus:border-white transition-all text-white"
-                placeholder="Search..."
+              <SearchForm
+                placeholder={"Search..."}
+                className={
+                  "border-dark-subtle text-xl focus:border-white text-white sm:w-[250px] w-[200px]"
+                }
+                onSubmit={handleSearchSubmit}
               />
             </li>
             <li className=" font-semibold text-xl flex gap-5 items-center">
               {isLoggedIn ? (
                 <>
-                  <p className={"text-white  transition-all duration-200 "}>
-                    {name}
-                  </p>
+                  <p className={"text-white sm:block hidden"}>{name}</p>
                   <button
                     onClick={() => {
                       handleLogout();
@@ -66,7 +71,7 @@ const Navbar = () => {
                   <Link
                     to={"/auth/sign-up"}
                     className={
-                      "text-white hover:text-dark-subtle transition-all duration-200"
+                      "text-white hover:text-dark-subtle transition-all duration-200 sm:block hidden"
                     }
                   >
                     Sign up

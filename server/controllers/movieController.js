@@ -792,3 +792,49 @@ exports.getTopRatedMovies = async (req, res) => {
     });
   }
 };
+
+exports.searchPublicMovies = async (req, res) => {
+  try {
+    const { title } = req.query;
+
+    // checking if title is present or  not
+    if (!title.trim()) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid Request!",
+      });
+    }
+
+    // finding movie
+    const movies = await Movie.find({
+      title: { $regex: title, $options: "i" },
+      status: "public",
+    });
+
+    const mapMovies = async (m) => {
+      const reviews = await getAverageRatings(m._id);
+      return {
+        id: m._id,
+        title: m.title,
+        poster: m.poster.url,
+        responsivePosters: m.poster.reponsive,
+        reviews: { ...reviews },
+      };
+    };
+
+    const newMovies = await Promise.all(movies.map(mapMovies));
+
+    return res.json({
+      success: true,
+      message: "Movie Found!",
+      results: newMovies,
+    });
+  } catch (error) {
+    console.log("Error in  get search  movies controller");
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Error in Getting Movies!",
+    });
+  }
+};

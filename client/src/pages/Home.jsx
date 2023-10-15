@@ -9,7 +9,7 @@ import {
 
 const Home = () => {
   return (
-    <div className="dark:bg-primary bg-white min-h-screen">
+    <div className="dark:bg-primary bg-white min-h-screen py-[100px]">
       <Container>
         <NotVerified />
         {/* slider */}

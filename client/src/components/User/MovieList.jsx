@@ -13,7 +13,9 @@ const MovieList = ({ movies = [], title, className = "" }) => {
 
   return (
     <div className=" pb-4">
-      <h2 className={`text-2xl my-5 font-semibold ${classes}`}>{title}</h2>
+      {title && (
+        <h2 className={`text-2xl my-5 font-semibold ${classes}`}>{title}</h2>
+      )}
       <GridContainer>
         {movies.map((movie) => {
           return <ListItem key={movie.id} movie={movie} />;
@@ -27,7 +29,7 @@ const ListItem = ({ movie }) => {
   const { title, reviews, id, poster, reponsiviePosters } = movie;
   return (
     <Link to={`/movie/${id}`}>
-      <div className="aspect-video overflow-hidden">
+      <div className="aspect-video overflow-hidden w-full">
         <img
           src={getPoster(reponsiviePosters) || poster}
           alt={title}

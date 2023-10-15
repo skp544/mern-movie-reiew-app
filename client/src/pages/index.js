@@ -10,6 +10,8 @@ import Dashboard from "./Admin/Dashboard";
 import Movies from "./Admin/Movies";
 import SearchMovies from "./Admin/SearchMovies";
 import SingleMovie from "./SingleMovie";
+import MovieReviews from "./MovieReviews";
+import SearchMovieUser from "./SearchMovieUser";
 
 export {
   Home,
@@ -24,4 +26,6 @@ export {
   Movies,
   SearchMovies,
   SingleMovie,
+  MovieReviews,
+  SearchMovieUser,
 };

@@ -4,12 +4,14 @@ import { useState } from "react";
 import { deleteMovie } from "../../api/movie";
 import toast from "react-hot-toast";
 import { getPoster } from "../../utils/helper";
+import { useNavigate } from "react-router-dom";
 
 const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [busy, setBusy] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedMovieId, setSelectedMovieId] = useState(null);
+  const navigate = useNavigate();
 
   const handleOnDeleteConfirm = async () => {
     setBusy(true);
@@ -46,13 +48,19 @@ const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
     setSelectedMovieId(null);
   };
 
+  const handleOpenClick = (id) => {
+    navigate(`/movie/${id}`);
+  };
+
   return (
     <>
       <MovieCard
         movie={movie}
         onDeleteClick={displayConfirmModal}
         onEditClick={handleOnEditClick}
+        onOpenClick={handleOpenClick}
       />
+
       <div className=" p-0">
         <ConfirmModal
           visible={showConfirmModal}
@@ -73,7 +81,14 @@ const MovieListItem = ({ movie, afterDelete, afterUpdate }) => {
 };
 
 const MovieCard = ({ movie, onDeleteClick, onEditClick, onOpenClick }) => {
-  const { poster = "", title, genres = [], status, responsivePosters } = movie;
+  const {
+    poster = "",
+    title,
+    genres = [],
+    status,
+    responsivePosters,
+    id,
+  } = movie;
 
   return (
     <table className=" w-full border-b   ">
@@ -131,7 +146,7 @@ const MovieCard = ({ movie, onDeleteClick, onEditClick, onOpenClick }) => {
                 <BsPencilSquare />
               </button>
               <button
-                onClick={onOpenClick}
+                onClick={() => onOpenClick(id)}
                 className="hover:text-green-500 transition-all duration-20"
                 type="button"
               >

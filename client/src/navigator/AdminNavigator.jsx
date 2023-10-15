@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 
-import { Actors, Dashboard, Movies, NotFound, SearchMovies } from "../pages";
+import {
+  Actors,
+  Dashboard,
+  Movies,
+  NotFound,
+  SearchMovies,
+  SingleMovie,
+} from "../pages";
 import { AdminNavbar, Header, MovieUpload, ActorUpload } from "../components";
 
 const AdminNavigator = () => {
@@ -38,6 +45,7 @@ const AdminNavigator = () => {
             <Route path="/movies" element={<Movies />} />
             <Route path="/actors" element={<Actors />} />
             <Route path="/search" element={<SearchMovies />} />
+            <Route path="/movie/:movieId" element={<SingleMovie />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>

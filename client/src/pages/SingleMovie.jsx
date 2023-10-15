@@ -99,8 +99,8 @@ const SingleMovie = () => {
   } = movie;
 
   return (
-    <div className="dark:bg-primary bg-white min-h-screen pb-10">
-      <Container className={" xl:px-0 px-4"}>
+    <div className="dark:bg-primary bg-white min-h-screen py-10 px-4  ">
+      <Container className={" xl:px-0 px-4 pt-10 "}>
         {/* trailer */}
         <video poster={poster} controls src={trailer} />
 

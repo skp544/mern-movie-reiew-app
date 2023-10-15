@@ -22,6 +22,7 @@ const {
   getSingleMovie,
   getRelatedMovies,
   getTopRatedMovies,
+  searchPublicMovies,
 } = require("../controllers/movieController");
 
 // helper functions
@@ -69,6 +70,7 @@ router.get("/search", isAuth, isAdmin, searchMovies);
 
 // public routes
 
+router.get("/search-public", searchPublicMovies);
 router.get("/latest-uploads", getLatestUploads);
 router.get("/single/:movieId", getSingleMovie);
 router.get("/related/:movieId", getRelatedMovies);

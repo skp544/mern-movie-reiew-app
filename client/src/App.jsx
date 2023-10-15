@@ -5,7 +5,9 @@ import {
   EmailVerification,
   ForgetPassword,
   Home,
+  MovieReviews,
   NotFound,
+  SearchMovieUser,
   SignIn,
   SignUp,
   SingleMovie,
@@ -31,6 +33,8 @@ const App = () => {
         <Route path="/auth/forget-password" element={<ForgetPassword />} />
         <Route path="/auth/reset-password" element={<ConfirmPassword />} />
         <Route path="/movie/:movieId" element={<SingleMovie />} />
+        <Route path="/movie/reviews/:movieId" element={<MovieReviews />} />
+        <Route path="/movie/search" element={<SearchMovieUser />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

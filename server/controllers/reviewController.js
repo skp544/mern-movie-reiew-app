@@ -10,6 +10,14 @@ exports.addReview = async (req, res) => {
 
     const userId = req.user._id;
 
+    // checking if user is verified or not
+    if (!req.user.isVerfified) {
+      return res.status(401).json({
+        success: false,
+        message: "User is not verified, Please verify first!",
+      });
+    }
+
     // checking is movie id valid or not
     if (!isValidObjectId(movieId)) {
       return res.status(401).json({
@@ -181,7 +189,7 @@ exports.getReviewsByMovie = async (req, res) => {
           select: "name",
         },
       })
-      .select("reviews");
+      .select("reviews title");
 
     const reviews = movie.reviews.map((r) => {
       const { owner, content, rating, _id: reviewId } = r;
@@ -201,7 +209,10 @@ exports.getReviewsByMovie = async (req, res) => {
     return res.json({
       success: true,
       message: "Review fetched successfully",
-      reviews,
+      movie: {
+        title: movie.title,
+        reviews,
+      },
     });
   } catch (error) {
     console.log("Error in get review controller");
