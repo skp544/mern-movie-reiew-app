@@ -11,7 +11,7 @@ exports.addReview = async (req, res) => {
     const userId = req.user._id;
 
     // checking if user is verified or not
-    if (!req.user.isVerfified) {
+    if (!req.user.isVerified) {
       return res.status(401).json({
         success: false,
         message: "User is not verified, Please verify first!",
