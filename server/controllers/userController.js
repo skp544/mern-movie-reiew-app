@@ -10,7 +10,11 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 // function/methods
-const { generateOTP, generateMailTransporter } = require("../utils/mail");
+const {
+  generateOTP,
+  generateMailTransporter,
+  mailSender,
+} = require("../utils/mail");
 const { generateRandomByte } = require("../utils/helper");
 
 // controllers
@@ -44,18 +48,22 @@ exports.create = async (req, res) => {
     });
 
     await newEmailVerificationToken.save();
+    console.log("mail");
 
-    let transport = generateMailTransporter();
+    let transport = await generateMailTransporter();
+
     // sending mail
-    transport.sendMail({
+    const response = await transport.sendMail({
       from: "verification@reviewapp.com",
-      to: newUser.email,
+      to: `${newUser.email}`,
       subject: "Email Verification",
       html: `
         <p>Your verifcation OTP</p>
         <h1>${OTP}</h1>
       `,
     });
+
+    // console.log(response);
 
     // sending response
     return res.status(201).json({
