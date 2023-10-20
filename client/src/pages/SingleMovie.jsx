@@ -105,11 +105,11 @@ const SingleMovie = () => {
         <video poster={poster} controls src={trailer} className=" w-full" />
 
         {/* title  */}
-        <div className=" flex justify-around items-center">
+        <div className=" flex justify-between items-center">
           <h2 className=" xl:text-4xl lg:text-3xl text-2xl text-highlight dark:text-highlight-dark py-3">
             {title}
           </h2>
-          <div className=" flex gap-2 flex-col">
+          <div className=" flex gap-2 flex-col items-end">
             <RatingStar rating={reviews?.ratingAvg} />
 
             <CustomBtnLink
