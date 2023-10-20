@@ -102,14 +102,14 @@ const SingleMovie = () => {
     <div className="dark:bg-primary bg-white min-h-screen py-10 px-4  ">
       <Container className={" xl:px-0 px-4 pt-10 "}>
         {/* trailer */}
-        <video poster={poster} controls src={trailer} />
+        <video poster={poster} controls src={trailer} className=" w-full" />
 
         {/* title  */}
-        <div className=" flex justify-between items-center">
+        <div className=" flex justify-around items-center">
           <h2 className=" xl:text-4xl lg:text-3xl text-2xl text-highlight dark:text-highlight-dark py-3">
             {title}
           </h2>
-          <div className=" flex flex-col justify-center items-end">
+          <div className=" flex gap-2 flex-col">
             <RatingStar rating={reviews?.ratingAvg} />
 
             <CustomBtnLink
@@ -119,6 +119,7 @@ const SingleMovie = () => {
             <CustomBtnLink
               onClick={handleOnRateMovie}
               label={"Rate The Movie"}
+              className={"self-end"}
             />
           </div>
         </div>
@@ -138,7 +139,7 @@ const SingleMovie = () => {
 
           {/* writer */}
           <ListWithLabel label={" Writers:"}>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {writers.map((w, i) => (
                 <CustomBtnLink label={w?.name} key={i} />
               ))}
@@ -147,7 +148,7 @@ const SingleMovie = () => {
 
           {/* cast */}
           <ListWithLabel label={" Cast:"}>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {cast.map(
                 (c, i) =>
                   c.leadActor && (
@@ -169,7 +170,7 @@ const SingleMovie = () => {
 
           {/* genres */}
           <ListWithLabel label={"Genres:"}>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               {genres.map((g, i) => (
                 <CustomBtnLink label={g} key={i} clickable={false} />
               ))}

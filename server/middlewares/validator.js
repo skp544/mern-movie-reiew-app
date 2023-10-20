@@ -10,8 +10,8 @@ exports.userValidator = [
     .not()
     .isEmpty()
     .withMessage("Password is Missing")
-    .isLength({ min: 6, max: 20 })
-    .withMessage("Password must be altleast 8 characters long"),
+    .isLength({ min: 6 })
+    .withMessage("Password must be altleast 6 characters long"),
 ];
 
 exports.validatePassword = [

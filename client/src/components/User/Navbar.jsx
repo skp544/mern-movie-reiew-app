@@ -20,11 +20,11 @@ const Navbar = () => {
   return (
     <div className=" bg-secondary shadow-md z-10 w-full shadow-gray-500 fixed top-0">
       <Container className="p-3">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between  gap-5 items-center">
           <Link to={"/"}>
             <img src="/logo.png" alt="logo" className=" sm:h-10 h-8" />
           </Link>
-          <ul className="flex items-center sm:space-x-6 space-x-2">
+          <ul className="flex items-center sm:space-x-6 gap-2">
             <li>
               <button
                 onClick={toggleTheme}
@@ -37,7 +37,7 @@ const Navbar = () => {
               <SearchForm
                 placeholder={"Search..."}
                 className={
-                  "border-dark-subtle text-xl focus:border-white text-white sm:w-[250px] w-[200px]"
+                  "border-dark-subtle text-xl focus:border-white text-white sm:w-[250px] w-[200px] sm:block hidden"
                 }
                 onSubmit={handleSearchSubmit}
               />
