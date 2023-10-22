@@ -17,4 +17,8 @@ const videoFileFilter = (req, file, cb) => {
 
 exports.uploadImage = multer({ storage, fileFilter: imageFileFilter });
 
-exports.uploadVideo = multer({ storage, fileFilter: videoFileFilter });
+exports.uploadVideo = multer({
+  storage,
+  fileFilter: videoFileFilter,
+  limits: { fieldSize: 50 * 1024 * 1024 },
+});
