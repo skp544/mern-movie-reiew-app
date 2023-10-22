@@ -23,7 +23,7 @@ app.use(express.json());
 app.use(
   cors({
     limit: "50mb",
-    origin: "https://mern-movie-reiew-app-tbfv.vercel.app/",
+    origin: "https://mern-movie-reiew-app-tbfv.vercel.app",
     credentials: true,
   })
 );
