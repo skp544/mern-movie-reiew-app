@@ -20,7 +20,13 @@ const PORT = process.env.PORT || 8000;
 
 // middlewares
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    limit: "50mb",
+    origin: "https://mern-movie-reiew-app-tbfv.vercel.app/",
+    credentials: true,
+  })
+);
 
 // routes
 app.use("/api/v1/user", userRoute);
